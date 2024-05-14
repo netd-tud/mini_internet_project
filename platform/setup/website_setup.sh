@@ -104,12 +104,15 @@ docker run -d --name='PROXY' --network="bridge" \
     -p ${WEBSERVER_PORT_KRILL}:${WEBSERVER_PORT_KRILL} \
     -v "/var/run/docker.sock:/var/run/docker.sock:ro" \
     -v ${LETSENCRYPT}:/letsencrypt \
+    -v ${DIRECTORY}/traefik.yaml:/etc/traefik/dynamic.yaml \
     --privileged \
     traefik:v2.6 \
     "--providers.docker=True" \
     "--providers.docker.network=bridge" \
     "--providers.docker.exposedbydefault=false" ${TLSCONF[@]} \
     "--providers.docker.defaultRule=Host(\"${WEBSERVER_HOSTNAME}\")" \
+    "--providers.file=True" \
+    "--providers.file.filename=/etc/traefik/dynamic.yaml" \
     "--entrypoints.web.address=:${WEBSERVER_PORT_HTTP}" \
     "--entrypoints.websecure.address=:${WEBSERVER_PORT_HTTPS}" \
     "--entrypoints.krill.address=:${WEBSERVER_PORT_KRILL}" > /dev/null
