@@ -2,8 +2,6 @@
 'main.connectivity_matrix': 'matrix',
 'main.looking_glass': 'looking glass',
 'main.as_connections': 'connections',
-'main.krill': 'krill',
-'main.vpn':'vpn'
 } -%}
 <!DOCTYPE html>
 <html lang="en">
@@ -24,11 +22,11 @@
 <body class="flex flex-col min-h-screen">
     <!-- Flex and min-height allow the Krill iframe to fill the screen. -->
     <!-- Menu bar background (full-width). -->
-    <div id="menu" class="flex-none w-full bg-[#1c1c21] text-white font-mono">
+    <div id="menu" class="flex-none w-full bg-[#002557] text-white font-mono">
         <nav class="max-w-6xl mx-auto flex items-center justify-between flex-wrap p-4">
             <!-- Logo -->
             <div class="flex items-center flex-shrink-0 mr-6 text-3xl font-bold">
-                <img class=" h-16 pr-4" alt="logo" src="{{url_for('static', filename='logo.svg')}}" />
+                <img class=" h-16 pr-4" alt="logo" src="{{url_for('static', filename='logo.png')}}" />
                 <!-- <span class="text-gray-400 pr-2">></span> -->
                 <span>routing project</span>
             </div>
