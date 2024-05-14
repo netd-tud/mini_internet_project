@@ -1,4 +1,4 @@
-CAIR    MATRIX_TARGET routinator:miniinterneteth/d_routinator   vtysh ALL
+CAIR    MATRIX_TARGET N/A   vtysh ALL
 CAIR    DNS           krill:miniinterneteth/d_krill             vtysh ALL
 CAIR    MATRIX        N/A                                       vtysh ALL
 CAIR    MEASUREMENT   N/A                                       vtysh ALL

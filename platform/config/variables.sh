@@ -11,7 +11,7 @@ DOCKERHUB_PREFIX="miniinterneteth/"
 # This URL will be suggested as the default location for students
 # to download their configs. It should be publicly accessible via ssh at port
 # 2000 + X, where X is each AS number.
-SSH_URL="duvel.ethz.ch"
+SSH_URL="internet.netd.cs.tu-dresden.de"
 
 # =============================================================================
 # WEBSERVER
@@ -21,8 +21,8 @@ SSH_URL="duvel.ethz.ch"
 # You need to specify the hostname of the server and an email for
 # LetsEncrypt to be enabled.
 # UPDATE THOSE VARIABLES. WEBSERVER_HOSTNAME -> hostname of the server and EMAIL -> empty string (for http)
-WEBSERVER_HOSTNAME="duvel.ethz.ch"
-WEBSERVER_ACME_MAIL="nsg@ethz.ch"
+WEBSERVER_HOSTNAME="internet.netd.cs.tu-dresden.de"
+WEBSERVER_ACME_MAIL="rechnernetze@tu-dresden.de"
 # Hostname and ports for the webserver and krill on the host.
 # (must be publicly available)
 # you can change http and https ports, but letsencrypt won't work, so its not recommended.
@@ -31,7 +31,7 @@ WEBSERVER_PORT_HTTPS="443"
 # Use the one you want, make sure to make it reachable from outside.
 WEBSERVER_PORT_KRILL="3000"
 # Put your timezone here.
-WEBSERVER_TZ="Europe/Zurich"
+WEBSERVER_TZ="Europe/Berlin"
 
 # =============================================================================
 # Connections
@@ -67,7 +67,7 @@ MATRIX_PAUSE_AFTER_START=false
 # =============================================================================
 
 # Whether to enable the history collector.
-HISTORY_ENABLED=true
+HISTORY_ENABLED=false
 # Whether to pause the matrix container after starting it.
 # Can reduce disk usage when the mini internet is not used immediately.
 HISTORY_PAUSE_AFTER_START=false
@@ -82,8 +82,8 @@ HISTORY_GIT_EMAIL="nsg@ethz.ch"
 # For example, create a gitlab access token and use it in the URL.
 # The token needs to have write access to the repository.
 # HISTORY_GIT_URL="https://gitlab-ci-token:<TOKEN HERE>@gitlab.ethz.ch/nsg/lectures/lec_commnet/projects/2024/routing_project/test_history.git"
-HISTORY_GIT_URL="https://gitlab-ci-token:-YVnkmi-qC5HxbqHn3_L@gitlab.ethz.ch/nsg/lectures/lec_commnet/projects/2024/routing_project/config-and-matrix-history.git"
-HISTORY_GIT_BRANCH="main"
+#HISTORY_GIT_URL="https://gitlab-ci-token:-YVnkmi-qC5HxbqHn3_L@gitlab.ethz.ch/nsg/lectures/lec_commnet/projects/2024/routing_project/config-and-matrix-history.git"
+#HISTORY_GIT_BRANCH="main"
 # switch.db and rpki.cache are binaries that cannot be stored easily in git.
 # If this option is "true" (recommend), we re-write the git history at every
 # update to remove old versions of these files; we always keep the most
