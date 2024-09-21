@@ -60,6 +60,7 @@ MATRIX_CONCURRENT_PINGS=500
 MATRIX_PING_FLAGS="-c 3 -i 0.01"  # Three pings, 10ms interval.
 # Whether to pause the matrix container after starting it.
 # Can reduce load when the mini internet is not used immediately.
+# Unpause container at any time with `docker container unpause MATRIX`
 MATRIX_PAUSE_AFTER_START=false
 
 # =============================================================================
@@ -70,19 +71,20 @@ MATRIX_PAUSE_AFTER_START=false
 HISTORY_ENABLED=true
 # Whether to pause the matrix container after starting it.
 # Can reduce disk usage when the mini internet is not used immediately.
+# Unpause container at any time with `docker container unpause HISTORY`
 HISTORY_PAUSE_AFTER_START=false
 # How often to fetch update configs and matrix state.
-HISTORY_UPDATE_FREQUENCY=$(( 60*60 ))  # every hours (in seconds)
+HISTORY_UPDATE_FREQUENCY=$(( 60*60 ))  # every hour (in seconds)
 # Timeout for ./save_configs.sh
 HISTORY_TIMEOUT="300s"
 # Username and email that will show up on the commit.
-HISTORY_GIT_USER="Mini-Internet History"
-HISTORY_GIT_EMAIL="nsg@ethz.ch"
+HISTORY_GIT_USER=""
+HISTORY_GIT_EMAIL=""
 # URL of the git repository to push the snapshots to; should be accessible.
 # For example, create a gitlab access token and use it in the URL.
 # The token needs to have write access to the repository.
 # HISTORY_GIT_URL="https://gitlab-ci-token:<TOKEN HERE>@gitlab.ethz.ch/nsg/lectures/lec_commnet/projects/2024/routing_project/test_history.git"
-HISTORY_GIT_URL="https://gitlab-ci-token:-YVnkmi-qC5HxbqHn3_L@gitlab.ethz.ch/nsg/lectures/lec_commnet/projects/2024/routing_project/config-and-matrix-history.git"
+HISTORY_GIT_URL=""
 HISTORY_GIT_BRANCH="main"
 # switch.db and rpki.cache are binaries that cannot be stored easily in git.
 # If this option is "true" (recommend), we re-write the git history at every

@@ -108,6 +108,8 @@ transit_as_topo = {
     "ixp": ("ACCR", peer),
 }
 
+# All non-transit ASes only have a single router ZURI.
+
 tier1_topo = {
     # Tier 1 Ases have no providers, but more peers and two IXPs.
     "ixp_central": ("CAIR", peer),
