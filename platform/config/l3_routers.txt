@@ -1,4 +1,4 @@
-CAIR	N/A           routinator:miniinterneteth/d_routinator vtysh
+CAIR	N/A           host:miniinterneteth/d_host             vtysh
 KHAR	MATRIX_TARGET host:miniinterneteth/d_host             vtysh
 ADDI	N/A           host:miniinterneteth/d_host             vtysh
 NAIR	MEASUREMENT   host:miniinterneteth/d_host             vtysh
