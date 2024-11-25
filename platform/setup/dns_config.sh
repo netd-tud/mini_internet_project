@@ -72,7 +72,7 @@ for ((i=0;i<n_groups;i++)); do
         group_internal_links="${group_i[4]}"
 
         location_local="${DIRECTORY}"/groups/dns/named.conf.local
-        forward_records="groups/dns/group_config/named.conf.local.group""${group_number}"
+        forward_records="${DIRECTORY}""/groups/dns/group_config/named.conf.local.group""${group_number}"
         if [ "${group_as}" != "IXP" ];then
 
             readarray routers < "${DIRECTORY}"/config/$group_router_config
@@ -128,8 +128,8 @@ for ((j=0;j<n_groups;j++)); do
 
     # create zone definitions for both forward (db.group[number]
     # and reverse (db.[number) DNS records
-    forward_records="groups/dns/zones/db.$domain"
-    reverse_records="groups/dns/zones/db.${group_number}"
+    forward_records="${DIRECTORY}/""groups/dns/zones/db.$domain"
+    reverse_records="${DIRECTORY}/""groups/dns/zones/db.${group_number}"
 
     if [ "${group_as}" != "IXP" ];then
 
