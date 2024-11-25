@@ -20,6 +20,20 @@ if (($UID != 0)); then
     exit 1
 fi
 
+# check dependencies and install if needed
+if command -v apt > /dev/null 2>&1; then
+    apt update
+    apt -y install openvswitch-switch bc uuid-runtime
+else
+    echo "no apt found to install packages"
+fi
+
+# check if docker is already installed and install if needed
+if !(command -v docker > /dev/null 2>&1;) then
+    curl -fsSL https://get.docker.com -o get-docker.sh
+    sudo sh get-docker.sh
+fi
+
 search_path ovs-vsctl
 search_path docker
 search_path uuidgen
