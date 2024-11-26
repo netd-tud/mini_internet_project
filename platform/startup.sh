@@ -56,13 +56,8 @@ echo "$(date +%Y-%m-%d_%H-%M-%S)"
 
 echo "hard_reset.sh"
 # time ./cleanup/cleanup.sh "${DIRECTORY}"
-SCRIPT_PATH=$(find $DIRECTORY -name "hard_reset.sh" -type f -executable | head -n 1)
-if [ -n "$SCRIPT_PATH" ]; then
-    time "$SCRIPT_PATH"
-else
-    echo "hard_reset.sh not found."
-fi
-# time $DIRECTORY/cleanup/hard_reset.sh
+
+time $DIRECTORY/cleanup/hard_reset.sh
 
 echo ""
 echo ""
@@ -197,8 +192,9 @@ time $DIRECTORY/setup/mpls_setup.sh "${DIRECTORY}"
 echo ""
 echo ""
 
+# TODO 
 echo "Waiting 60sec for RPKI CA and proxy to startup.."
-sleep 60
+sleep 10
 
 echo "rpki_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "rpki_setup.sh: "
@@ -221,6 +217,7 @@ time $DIRECTORY/groups/rpki/webserver_links.sh
 echo ""
 echo ""
 
+# TODO 
 echo "history_setup.sh: "
 echo "history_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 time $DIRECTORY/setup/history_setup.sh "${DIRECTORY}"
@@ -237,7 +234,7 @@ fi
 echo ""
 echo ""
 
-
+# TODO 
 echo "Applying hijacks: "
 echo "hijacks $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 time $DIRECTORY/setup/hijack_config.py "${DIRECTORY}"
@@ -247,8 +244,9 @@ echo "$(date +%Y-%m-%d_%H-%M-%S)"
 echo ""
 echo ""
 
+# TODO 
 echo "Waiting 60sec for BGP messages to propagate..."
-sleep 60
+sleep 10
 
 echo "Refreshing selected advertisements: "
 echo "bgp_clear $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt

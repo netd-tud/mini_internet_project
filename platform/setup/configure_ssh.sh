@@ -28,7 +28,7 @@ source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
 
 # Generate TA key pair
-ssh-keygen -t rsa -b 4096 -C "ta key" -P "" -f "${DIRECTORY}/""groups/id_rsa" -q
+ssh-keygen -t rsa -b 4096 -C "ta key" -P "" -f "${DIRECTORY}/groups/id_rsa" -q
 # We need to distribute the key to the TAs, so we make it readable.
 chmod +r "${DIRECTORY}/"groups/id_rsa
 cp "${DIRECTORY}/"groups/id_rsa.pub "${DIRECTORY}/"groups/authorized_keys
