@@ -29,6 +29,9 @@
 # several pairs of containers (instead of one ovs switch for each pair of containers).
 # Some other parts of the original file have been removed.
 
+DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+echo $DIRECTORY
+
 # Check for programs we'll need.
 search_path () {
     save_IFS=$IFS
@@ -65,7 +68,7 @@ delete_netns_link () {
     rm -f /var/run/netns/"$PID"
 }
 
-source "${DIRECTORY}"/groups/docker_pid.map
+source "${DIRECTORY}/.."/groups/docker_pid.map
 get_docker_pid() {
     if [[ -v "DOCKER_TO_PID[$1]" ]]; then
         DOCKER_PID="${DOCKER_TO_PID[$1]}"

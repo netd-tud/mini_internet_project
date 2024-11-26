@@ -8,10 +8,11 @@ set -o nounset
 DIRECTORY="$1"
 source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/ovs-docker.sh
-source "${DIRECTORY}"/setup/_parallel_helper.sh
+source "${DIRECTORY}"/_parallel_helper.sh
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+DIRECTORY_PLATFORM=$(dirname "${DIRECTORY}")
+readarray groups < $DIRECTORY_PLATFORM/config/AS_config.txt
 group_numbers=${#groups[@]}
 
 # Layer2 connectivity
@@ -28,10 +29,10 @@ for ((k = 0; k < group_numbers; k++)); do
 
     if [ "${group_as}" != "IXP" ]; then
 
-        readarray routers < "${DIRECTORY}"/config/$group_router_config
-        readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
-        readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
-        readarray l2_links < "${DIRECTORY}"/config/$group_layer2_links
+        readarray routers < $DIRECTORY_PLATFORM/config/$group_router_config
+        readarray l2_switches < $DIRECTORY_PLATFORM/config/$group_layer2_switches
+        readarray l2_hosts < $DIRECTORY_PLATFORM/config/$group_layer2_hosts
+        readarray l2_links < $DIRECTORY_PLATFORM/config/$group_layer2_links
         n_routers=${#routers[@]}
         n_l2_switches=${#l2_switches[@]}
         n_l2_hosts=${#l2_hosts[@]}
@@ -81,14 +82,14 @@ for ((k = 0; k < group_numbers; k++)); do
                     if [ "${group_as_tunnel}" != "IXP" ] && [ "${group_number_tunnel}" != "${group_number}" ]; then
                         subnet_remote_router=$(subnet_router $group_number_tunnel $i)
 
-                        echo "docker exec -d ${group_number}_${rname}router ip tunnel add tun6to4_${group_number_tunnel} mode sit remote ${subnet_remote_router%/*} local ${subnet_local_router%/*} ttl 255" >> "${DIRECTORY}"/groups/g"${group_number}"/6in4_setup.sh
+                        echo "docker exec -d ${group_number}_${rname}router ip tunnel add tun6to4_${group_number_tunnel} mode sit remote ${subnet_remote_router%/*} local ${subnet_local_router%/*} ttl 255" >> $DIRECTORY_PLATFORM/groups/g"${group_number}"/6in4_setup.sh
 
-                        echo "docker exec -d ${group_number}_${rname}router ip link set tun6to4_${group_number_tunnel} up" >> "${DIRECTORY}"/groups/g"${group_number}"/6in4_setup.sh
+                        echo "docker exec -d ${group_number}_${rname}router ip link set tun6to4_${group_number_tunnel} up" >> $DIRECTORY_PLATFORM/groups/g"${group_number}"/6in4_setup.sh
 
                         for vlan in "${!vlanset[@]}"; do
                             subnet_remote_router_l2=$(subnet_l2_ipv6 $group_number_tunnel $((${l2_id[$property2]} - 1)) $vlan 0)
 
-                            echo "docker exec -d ${group_number}_${rname}router ip route add ${subnet_remote_router_l2} dev tun6to4_${group_number_tunnel}" >> "${DIRECTORY}"/groups/g"${group_number}"/6in4_setup.sh
+                            echo "docker exec -d ${group_number}_${rname}router ip route add ${subnet_remote_router_l2} dev tun6to4_${group_number_tunnel}" >> $DIRECTORY_PLATFORM/groups/g"${group_number}"/6in4_setup.sh
                         done
                     fi
                 done

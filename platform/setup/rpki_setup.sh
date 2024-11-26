@@ -38,7 +38,7 @@ for ((j = 0; j < n_krill_containers; j++)); do
         # docker exec $container_name ip route del 0/0
 
         # Enable ssh port forwarding to krill webserver via ssh proxy container (and only port forwarding)
-        docker exec ${group_number}_ssh bash -c "echo 'restrict,port-forwarding,command=\"/bin/false\" $(cat groups/rpki/id_rsa_krill_webserver.pub)' >> ~/.ssh/authorized_keys"
+        docker exec ${group_number}_ssh bash -c "echo 'restrict,port-forwarding,command=\"/bin/false\" $(cat "${DIRECTORY}/"groups/rpki/id_rsa_krill_webserver.pub)' >> ~/.ssh/authorized_keys"
 
         # Setup Certificate Authority and predefined ROAs
         docker exec $container_name /bin/bash /home/setup.sh
