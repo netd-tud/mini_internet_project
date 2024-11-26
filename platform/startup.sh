@@ -62,7 +62,7 @@ if [ -n "$SCRIPT_PATH" ]; then
 else
     echo "hard_reset.sh not found."
 fi
-time $DIRECTORY/cleanup/hard_reset.sh
+# time $DIRECTORY/cleanup/hard_reset.sh
 
 echo ""
 echo ""

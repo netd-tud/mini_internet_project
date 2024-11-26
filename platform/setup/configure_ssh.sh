@@ -28,10 +28,10 @@ source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
 
 # Generate TA key pair
-ssh-keygen -t rsa -b 4096 -C "ta key" -P "" -f "groups/id_rsa" -q
+ssh-keygen -t rsa -b 4096 -C "ta key" -P "" -f "${DIRECTORY}/""groups/id_rsa" -q
 # We need to distribute the key to the TAs, so we make it readable.
-chmod +r groups/id_rsa
-cp groups/id_rsa.pub groups/authorized_keys
+chmod +r "${DIRECTORY}/"groups/id_rsa
+cp "${DIRECTORY}/"groups/id_rsa.pub "${DIRECTORY}/"groups/authorized_keys
 
 readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
 GroupNumber=${#ASConfig[@]}
@@ -58,7 +58,7 @@ for ((k = 0; k < GroupNumber; k++)); do
 
         # generate ssh key
         GroupSSHContainer="${GroupAS}_ssh"
-        ssh-keygen -t rsa -b 4096 -C "internal key group ${GroupAS}" -P "" -f "groups/g${GroupAS}/id_rsa" -q
+        ssh-keygen -t rsa -b 4096 -C "internal key group ${GroupAS}" -P "" -f "${DIRECTORY}/""groups/g${GroupAS}/id_rsa" -q
 
         docker cp "${GroupDirectory}"/id_rsa "${GroupAS}"_ssh:/root/.ssh/id_rsa > /dev/null
         docker cp "${GroupDirectory}"/id_rsa.pub "${GroupAS}"_ssh:/root/.ssh/id_rsa.pub > /dev/null

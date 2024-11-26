@@ -65,7 +65,7 @@ delete_netns_link () {
     rm -f /var/run/netns/"$PID"
 }
 
-source ./groups/docker_pid.map
+source "${DIRECTORY}"/groups/docker_pid.map
 get_docker_pid() {
     if [[ -v "DOCKER_TO_PID[$1]" ]]; then
         DOCKER_PID="${DOCKER_TO_PID[$1]}"
