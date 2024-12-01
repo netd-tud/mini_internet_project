@@ -48,7 +48,11 @@ fi
 
 # # TODO: check the directory is platform/
 #DIRECTORY=$(cd `dirname $0` && pwd)
-DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
+  DIRECTORY="$1"
+else
+  DIRECTORY=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
+fi
 echo $DIRECTORY
 
 
