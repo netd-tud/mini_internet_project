@@ -21,12 +21,12 @@ if [[ ! $(basename "$PWD") == "platform" ]]; then
 fi
 
 DIRECTORY=$(pwd)
-source "${DIRECTORY}"/config/variables.sh
-source "${DIRECTORY}"/config/subnet_config.sh
+source "${CONFIG_DIRECTORY}"/variables.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-readarray ASConfig <"${DIRECTORY}"/config/AS_config.txt
+readarray ASConfig <"${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 print_usage() {
@@ -162,10 +162,10 @@ restart_one_router() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
-            readarray InternalLinks <"${DIRECTORY}/config/$GroupInternalLinkConfig"
-            readarray L2Switches <"${DIRECTORY}/config/$GroupL2SwitchConfig"
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray InternalLinks <"${CONFIG_DIRECTORY}/$GroupInternalLinkConfig"
+            readarray L2Switches <"${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
 
             RouterNumber=${#Routers[@]}
             InternalLinkNumber=${#InternalLinks[@]}
@@ -254,7 +254,7 @@ restart_one_router() {
     # configure the tunnel and vlan
     local RouterPID=$(get_container_pid "${RouterCtnName}" "False")
     create_netns_symlink "${RouterPID}"
-    read TunnelEndA TunnelEndB <"${DIRECTORY}/config/l2_tunnel.txt"
+    read TunnelEndA TunnelEndB <"${CONFIG_DIRECTORY}/l2_tunnel.txt"
     for RouterName in "${!RouterToDCId[@]}"; do
         DCId="${RouterToDCId[$RouterName]}"
         # if the current router is the gateway router
@@ -321,7 +321,7 @@ restart_one_router() {
     done
 
     # add the external link
-    readarray ExternalLinks <"${DIRECTORY}/config/aslevel_links.txt"
+    readarray ExternalLinks <"${CONFIG_DIRECTORY}/aslevel_links.txt"
     ExternalLinkNumber=${#ExternalLinks[@]}
 
     for ((i = 0; i < ExternalLinkNumber; i++)); do
@@ -430,7 +430,7 @@ restart_one_l2_host() {
                 HostToVlanId[$HostName]=$VlanId
             done < <(get_l2_host_to_vlan_id "${CurrentAS}")
 
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -529,9 +529,9 @@ restart_one_l2_switch() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray L2Switches <"${DIRECTORY}/config/$GroupL2SwitchConfig"
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
-            readarray L2Links <"${DIRECTORY}/config/$GroupL2LinkConfig"
+            readarray L2Switches <"${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
+            readarray L2Links <"${CONFIG_DIRECTORY}/$GroupL2LinkConfig"
             L2SwitchNumber=${#L2Switches[@]}
             L2HostNumber=${#L2Hosts[@]}
             L2LinkNumber=${#L2Links[@]}
@@ -672,7 +672,7 @@ restart_one_l2_switch() {
 # restart an ixp
 restart_one_ixp() {
     # check enough arguments are provided
-    if [ "$#" -ne 1 ]; then
+    if [ "$#" -ne 2 ]; then
         echo "Usage: reconnect_one_ixp <AS>"
         exit 1
     fi
@@ -696,7 +696,7 @@ restart_one_ixp() {
     sleep 300
 
     # connect all external links
-    readarray ExternalLinks <"${DIRECTORY}/config/aslevel_links.txt"
+    readarray ExternalLinks <"${CONFIG_DIRECTORY}/aslevel_links.txt"
     ExternalLinkNumber=${#ExternalLinks[@]}
     for ((i = 0; i < ExternalLinkNumber; i++)); do
         LinkI=(${ExternalLinks[$i]}) # external link row
@@ -740,7 +740,7 @@ restart_one_ixp() {
 # restart an ssh proxy container
 restart_one_ssh() {
     # check enough arguments are provided
-    if [ "$#" -ne 1 ]; then
+    if [ "$#" -ne 2 ]; then
         echo "Usage: restart_one_ssh <AS>"
         exit 1
     fi
@@ -789,7 +789,7 @@ restart_mesaurement() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array
@@ -834,7 +834,7 @@ restart_dns() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array
@@ -901,7 +901,7 @@ restart_matrix() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array
@@ -976,28 +976,28 @@ case $1 in
         restart_one_ssh "${CurrentAS}"
         ;;
     matrix)
-        if [ "$#" -ne 1 ]; then
+        if [ "$#" -ne 2 ]; then
         print_usage
         exit 1
            fi
         restart_matrix
         ;;
     dns)
-        if [ "$#" -ne 1 ]; then
+        if [ "$#" -ne 2 ]; then
         print_usage
         exit 1
            fi
         restart_dns
         ;;
     measurement)
-        if [ "$#" -ne 1 ]; then
+        if [ "$#" -ne 2 ]; then
         print_usage
         exit 1
            fi
         restart_mesaurement
         ;;
     web)
-        if [ "$#" -ne 1 ]; then
+        if [ "$#" -ne 2 ]; then
         print_usage
         exit 1
            fi

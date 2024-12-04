@@ -17,11 +17,11 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY=$(readlink -f $1)
-source "${DIRECTORY}"/config/variables.sh
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/variables.sh
 
 # Source directories.
 DATADIR="$(pwd ${DIRECTORY})/groups"
-CONFIGDIR="$(pwd ${DIRECTORY})/config"
 
 # Directory for server config.
 mkdir -p "${DATADIR}/webserver"
@@ -32,7 +32,7 @@ LETSENCRYPT="${DATADIR}/webserver/letsencrypt"
 DATADIR_SERVER='/server/data'
 CONFIGDIR_SERVER='/server/configs'
 
-source "${DIRECTORY}"/config/subnet_config.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # TLS and LetsEncrypt
@@ -78,7 +78,7 @@ docker run -itd --name="WEB" --cpus=2 \
     --network="bridge" -p 8000:8000 \
     --pids-limit 100 \
     -v ${DATADIR}:${DATADIR_SERVER} \
-    -v ${CONFIGDIR}:${CONFIGDIR_SERVER} \
+    -v ${CONFIG_DIRECTORY}:${CONFIGDIR_SERVER} \
     -v ${CONFIGFILE}:/server/config.py \
     -e SERVER_CONFIG=/server/config.py \
     -e TZ=${WEBSERVER_TZ} \

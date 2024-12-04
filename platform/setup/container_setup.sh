@@ -6,14 +6,15 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY=$(readlink -f $1)
-source "${DIRECTORY}"/config/variables.sh
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/variables.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 touch "${DIRECTORY}/groups/rpki/krill_containers.txt"
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 rpki_location="${DIRECTORY}/groups/rpki"
@@ -56,9 +57,9 @@ for ((k = 0; k < group_numbers; k++)); do
 
         if [ "${group_as}" != "IXP" ]; then
 
-            readarray routers < "${DIRECTORY}"/config/$group_router_config
-            readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
-            readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
+            readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+            readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
+            readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
             n_routers=${#routers[@]}
             n_l2_switches=${#l2_switches[@]}
             n_l2_hosts=${#l2_hosts[@]}
@@ -79,7 +80,7 @@ for ((k = 0; k < group_numbers; k++)); do
                 -v "${location}"/restart_ospfd.sh:/root/restart_ospfd.sh \
                 -v /etc/timezone:/etc/timezone:ro \
                 -v /etc/localtime:/etc/localtime:ro \
-                -v "${DIRECTORY}"/config/ssh_welcome_message.txt:/etc/motd:ro \
+                -v "${CONFIG_DIRECTORY}"/ssh_welcome_message.txt:/etc/motd:ro \
                 --log-opt max-size=1m --log-opt max-file=3 \
                 --network="bridge" -p "$((group_number + 2000)):22" \
                 "${DOCKERHUB_PREFIX}d_ssh" > /dev/null # suppress container id output
@@ -259,7 +260,7 @@ for ((k = 0; k < group_numbers; k++)); do
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/krill.key:/var/krill/data/ssl/key.pem:ro")
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/krill.conf:/var/krill/krill.conf:ro")
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/setup.sh:/home/setup.sh:ro")
-                        additional_args+=("-v" "${DIRECTORY}/config/roas:/var/krill/roas:ro")
+                        additional_args+=("-v" "${CONFIG_DIRECTORY}/roas:/var/krill/roas:ro")
                         # Use bridge network for krill in order to connect to the web proxy container
                         # and use an https connection from the ouside world to reach the krill website
                         additional_args+=("-p" "3080:3080")

@@ -9,12 +9,13 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY=$(readlink -f $1)
+CONFIG_DIRECTORY="$2"
 
-source "${DIRECTORY}"/config/subnet_config.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 
 
 group_numbers=${#groups[@]}

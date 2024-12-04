@@ -82,7 +82,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     directory = sys.argv[1]
-    input_file = f"{directory}/config/aslevel_links.txt"
+    config_directory = sys.argv[2]
+    input_file = f"{config_directory}/aslevel_links.txt"
     output_dir = f"{directory}/groups/aslevel_links/"
     os.makedirs(output_dir, exist_ok=True)
 

@@ -8,9 +8,10 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 for ((k=0;k<group_numbers;k++)); do

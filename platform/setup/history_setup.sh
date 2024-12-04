@@ -7,7 +7,8 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY=$(readlink -f $1)
-source "${DIRECTORY}"/config/variables.sh
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/variables.sh
 
 # Source directories.
 DATADIR="${DIRECTORY}/groups"

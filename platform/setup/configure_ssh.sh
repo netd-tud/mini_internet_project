@@ -16,13 +16,14 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
 
-DIRECTORY=$1
-source "${DIRECTORY}"/config/subnet_config.sh
+DIRECTORY="$1"
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
@@ -33,7 +34,7 @@ ssh-keygen -t rsa -b 4096 -C "ta key" -P "" -f "${DIRECTORY}/groups/id_rsa" -q
 chmod +r "${DIRECTORY}/"groups/id_rsa
 cp "${DIRECTORY}/"groups/id_rsa.pub "${DIRECTORY}/"groups/authorized_keys
 
-readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
+readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 for ((k = 0; k < GroupNumber; k++)); do
@@ -48,9 +49,9 @@ for ((k = 0; k < GroupNumber; k++)); do
 
     if [ "${GroupType}" != "IXP" ]; then
 
-        readarray Routers < "${DIRECTORY}"/config/$GroupRouterConfig
-        readarray L2Switches < "${DIRECTORY}/config/$GroupL2SwitchConfig"
-        readarray L2Hosts < "${DIRECTORY}/config/$GroupL2HostConfig"
+        readarray Routers < "${CONFIG_DIRECTORY}"/$GroupRouterConfig
+        readarray L2Switches < "${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+        readarray L2Hosts < "${CONFIG_DIRECTORY}/$GroupL2HostConfig"
 
         RouterNumber=${#Routers[@]}
         L2SwitchNumber=${#L2Switches[@]}

@@ -11,6 +11,7 @@ set -o nounset
 
 DIRECTORY="$1"
 CONFIG_DIRECTORY="$2"
+CONFIG_DIRECTORY="$2"
 
 # read configs
 readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt

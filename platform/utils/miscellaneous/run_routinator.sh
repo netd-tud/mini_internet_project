@@ -11,13 +11,14 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
+CONFIG_DIRECTORY="$2"
 GROUP="${2:-}"
 
-source "${DIRECTORY}"/config/subnet_config.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 readarray routinator_containers < "${DIRECTORY}"/groups/rpki/routinator_containers.txt
 
 group_numbers=${#groups[@]}

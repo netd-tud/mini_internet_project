@@ -5,8 +5,9 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
+CONFIG_DIRECTORY="$2"
 
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 for ((k=0;k<group_numbers;k++)); do
@@ -19,7 +20,7 @@ for ((k=0;k<group_numbers;k++)); do
 
     if [ "${group_as}" != "IXP" ];then
 
-        readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
+        readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
         n_l2_hosts=${#l2_hosts[@]}
 
         for ((l=0;l<n_l2_hosts;l++)); do

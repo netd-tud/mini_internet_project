@@ -8,7 +8,7 @@ if ! [ -f runner ]; then
 	exit 1
 fi
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
 	echo "usage: $0 user" 2>&1
 	exit 1
 fi

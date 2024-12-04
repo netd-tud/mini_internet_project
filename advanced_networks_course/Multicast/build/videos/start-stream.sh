@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Pass the video name (a file in /home/videos/) as argument."
     exit 1
 fi

@@ -9,7 +9,8 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="$2"
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/ovs-docker.sh
 
 # readarray krill_containers < "${DIRECTORY}"/groups/rpki/krill_containers.txt
@@ -32,7 +33,7 @@ source "${DIRECTORY}"/setup/ovs-docker.sh
 #     )
 # done
 
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 for ((k=0;k<group_numbers;k++)); do
@@ -45,7 +46,7 @@ for ((k=0;k<group_numbers;k++)); do
 
     if [ "${group_as}" != "IXP" ];then
 
-        readarray routers < "${DIRECTORY}"/config/$group_router_config
+        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
         n_routers=${#routers[@]}
 
         br_name="${group_number}"-host
