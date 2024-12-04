@@ -10,9 +10,10 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
+CONFIG_DIRECTORY="$2"
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 mkdir "${DIRECTORY}"/groups
@@ -28,7 +29,7 @@ for ((k = 0; k < group_numbers; k++)); do
 
     if [ "${group_as}" != "IXP" ]; then
 
-        readarray routers < "${DIRECTORY}"/config/$group_router_config
+        readarray routers < "${CONFIG_DIRECTORY}"/"${group_router_config}"
         n_routers=${#routers[@]}
 
         for ((i = 0; i < n_routers; i++)); do
@@ -45,7 +46,7 @@ for ((k = 0; k < group_numbers; k++)); do
             mkdir "${location}"
             # router configs are saved periodically in frr.con
             touch "${location}"/frr.conf
-            cp $DIRECTORY/config/daemons "${location}"/daemons
+            cp "${CONFIG_DIRECTORY}"/daemons "${location}"/daemons
             touch "${location}"/connectivity.txt
             touch "${location}"/looking_glass.txt
             touch "${location}"/looking_glass_json.txt
@@ -58,7 +59,7 @@ for ((k = 0; k < group_numbers; k++)); do
         location="${DIRECTORY}"/groups/g"${group_number}"
         touch "${location}"/frr.conf
         touch "${location}"/looking_glass.txt
-        cp $DIRECTORY/config/daemons "${location}"/daemons
+        cp "${CONFIG_DIRECTORY}"/daemons "${location}"/daemons
     fi
 done
 
@@ -96,7 +97,7 @@ echo "source \"${DIRECTORY}/setup/ovs-docker.sh\"" >> "${location}"/ip_setup.sh
 echo "source \"${DIRECTORY}/setup/ovs-docker.sh\"" >> "${location}"/add_vpns.sh
 
 # FIXME: what is this check for
-if [ $# -ne 1 ]; then
+if [ $# -ne 2 ]; then
     echo $0: usage ./make_vms dst_grp
     exit 1
 fi

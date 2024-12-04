@@ -48,12 +48,17 @@ fi
 
 # # TODO: check the directory is platform/
 #DIRECTORY=$(cd `dirname $0` && pwd)
-if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
-  DIRECTORY="$1"
-else
-  DIRECTORY=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
-fi
+
+# DIRECTORY is the location of this startup.sh file
+DIRECTORY=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 echo $DIRECTORY
+
+if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
+  CONFIG_DIRECTORY="$1"
+else
+  CONFIG_DIRECTORY="${DIRECTORY}"/config
+fi
+
 
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"
@@ -86,7 +91,7 @@ modprobe mpls_iptunnel # enables the kernel to create VPN to tunnel IP packets o
 
 echo "folder_setup.sh $(($(date +%s%N)/1000000))" > "${DIRECTORY}"/log.txt
 echo "folder_setup.sh: "
-time $DIRECTORY/setup/folder_setup.sh "${DIRECTORY}"
+time $DIRECTORY/setup/folder_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 echo ""
 echo ""
