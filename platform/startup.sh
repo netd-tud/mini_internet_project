@@ -23,7 +23,7 @@ fi
 # check dependencies and install if needed
 if command -v apt > /dev/null 2>&1; then
     apt update
-    apt -y install openvswitch-switch bc uuid-runtime
+    apt -y install openvswitch-switch bc uuid-runtime openvpn
 else
     echo "no apt found to install packages"
 fi
