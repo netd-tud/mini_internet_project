@@ -16,7 +16,7 @@ source "${DIRECTORY}"/_parallel_helper.sh
 
 # read configs
 DIRECTORY_PLATFORM=$(dirname "${DIRECTORY}")
-readarray groups < $DIRECTORY_PLATFORM/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 # Layer2 connectivity
@@ -33,10 +33,10 @@ for ((k = 0; k < group_numbers; k++)); do
 
     if [ "${group_as}" != "IXP" ]; then
 
-        readarray routers < $DIRECTORY_PLATFORM/config/$group_router_config
-        readarray l2_switches < $DIRECTORY_PLATFORM/config/$group_layer2_switches
-        readarray l2_hosts < $DIRECTORY_PLATFORM/config/$group_layer2_hosts
-        readarray l2_links < $DIRECTORY_PLATFORM/config/$group_layer2_links
+        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+        readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
+        readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
+        readarray l2_links < "${CONFIG_DIRECTORY}"/$group_layer2_links
         n_routers=${#routers[@]}
         n_l2_switches=${#l2_switches[@]}
         n_l2_hosts=${#l2_hosts[@]}
