@@ -23,12 +23,16 @@ if [ "$#" -ne 1 ]; then
 fi
 
 DIRECTORY=$1
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
 
-readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
+readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 for ((k = 0; k < GroupNumber; k++)); do

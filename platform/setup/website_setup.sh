@@ -17,7 +17,12 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY=$(readlink -f $1)
-source "${DIRECTORY}"/config/variables.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+
+source "${CONFIG_DIRECTORY}"/variables.sh
 
 # Source directories.
 DATADIR="$(pwd ${DIRECTORY})/groups"
@@ -32,7 +37,7 @@ LETSENCRYPT="${DATADIR}/webserver/letsencrypt"
 DATADIR_SERVER='/server/data'
 CONFIGDIR_SERVER='/server/configs'
 
-source "${DIRECTORY}"/config/subnet_config.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # TLS and LetsEncrypt

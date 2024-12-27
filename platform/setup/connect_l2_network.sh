@@ -22,16 +22,20 @@ if [ "$#" -ne 1 ]; then
 fi
 
 DIRECTORY=$1
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-source "${DIRECTORY}"/config/variables.sh
+source "${CONFIG_DIRECTORY}"/variables.sh
 
 # Needed to create the VLAN on the router interface
 modprobe 8021q
 
-readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
+readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 # TODO: Specify link properties to a gateway router in a config file instead.

@@ -54,11 +54,15 @@ connect_one_link_group() {
 }
 
 DIRECTORY=$1
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-# readarray ExternalLinks < "${DIRECTORY}"/config/aslevel_links.txt
+# readarray ExternalLinks < "${CONFIG_DIRECTORY}"/aslevel_links.txt
 
 # first compute independent links that can be parallelized
 python3 "${DIRECTORY}"/setup/_compute_independent_ext_links.py "${DIRECTORY}"
@@ -72,4 +76,4 @@ wait
 
 # delete temporary link files
 # can be reused in rpki config
-# rm -f "${DIRECTORY}"/config/_aslevel_links_*.txt
+# rm -f "${CONFIG_DIRECTORY}"/_aslevel_links_*.txt
