@@ -16,8 +16,8 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <directory>"
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <directory> <config_directory>"
     exit 1
 fi
 
