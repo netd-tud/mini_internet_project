@@ -5,12 +5,11 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 group_numbers=${#groups[@]}
 
 # bridge for connection from host to ssh containers
@@ -41,11 +40,11 @@ for ((k = 0; k < group_numbers; k++)); do
 
     if [ "${group_as}" != "IXP" ]; then
 
-        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
-        readarray intern_links < "${CONFIG_DIRECTORY}"/$group_internal_links
-        readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
-        readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
-        readarray l2_links < "${CONFIG_DIRECTORY}"/$group_layer2_links
+        readarray routers < "${DIRECTORY}"/config/$group_router_config
+        readarray intern_links < "${DIRECTORY}"/config/$group_internal_links
+        readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
+        readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
+        readarray l2_links < "${DIRECTORY}"/config/$group_layer2_links
         n_routers=${#routers[@]}
         n_intern_links=${#intern_links[@]}
         n_l2_switches=${#l2_switches[@]}

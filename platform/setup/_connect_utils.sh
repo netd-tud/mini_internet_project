@@ -43,7 +43,7 @@ get_dc_name_to_id() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -79,7 +79,7 @@ get_unique_vlan_set() {
         GroupL2HostConfig="${GroupK[6]}" # l2 host config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
+            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -113,7 +113,7 @@ get_dc_name_to_gateway_number() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -172,7 +172,7 @@ get_l2_host_to_vlan_id() {
         GroupL2HostConfig="${GroupK[6]}" # l2 host config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
+            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -203,7 +203,7 @@ is_all_in_one() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -234,7 +234,7 @@ get_region_id() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -269,7 +269,7 @@ is_krill_or_routinator() {
         local IsAllInOne=$(_is_all_in_one "${CurrentAS}")
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -312,7 +312,7 @@ is_krill_or_routinator() {
 check_service_is_required() {
 
     # check enough arguments are provided
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: check_service_is_required <ServiceName>"
         exit 1
     fi
@@ -326,7 +326,7 @@ check_service_is_required() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            if grep -Fq "${ServiceName}" "${CONFIG_DIRECTORY}"/$GroupRouterConfig; then
+            if grep -Fq "${ServiceName}" "${DIRECTORY}"/config/$GroupRouterConfig; then
                 ServiceRequired=True
                 break
             fi
@@ -367,7 +367,7 @@ create_netns_symlink() {
         exit 1
     fi
 
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: create_netns_symlink <PID>"
         exit 1
     fi
@@ -390,7 +390,7 @@ create_netns_symlink() {
 # create a unique port name used in interface names of a veth pair
 create_unique_port_name() {
 
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: create_unique_port_name <Identifier>"
         exit 1
     fi

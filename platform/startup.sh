@@ -57,6 +57,8 @@ echo $DIRECTORY
 CONFIG_DIRECTORY="${DIRECTORY}"/config
 if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
   CONFIG_DIRECTORY="$1"
+else
+  CONFIG_DIRECTORY="${DIRECTORY}"/config
 fi
 echo $CONFIG_DIRECTORY
 
@@ -98,105 +100,105 @@ echo ""
 
 echo "dns_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "dns_config.sh: "
-time $DIRECTORY/setup/dns_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/dns_config.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "rpki_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "rpki_config.sh: "
-time $DIRECTORY/setup/rpki_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/rpki_config.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 # echo "vpn_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 # echo "vpn_config.sh: "
-# time $DIRECTORY/setup/vpn_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+# time $DIRECTORY/setup/vpn_config.sh "${DIRECTORY}"
 
 # echo ""
 # echo ""
 
 echo "goto_scripts.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "goto_scripts.sh: "
-time $DIRECTORY/setup/goto_scripts.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/goto_scripts.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "save_configs.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "save_configs.sh: "
-time $DIRECTORY/setup/save_configs.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/save_configs.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "container_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "container_setup.sh: "
-time $DIRECTORY/setup/container_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/container_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "connect_l3_host_router.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "connect_l3_host_router.sh: "
-time $DIRECTORY/setup/connect_l3_host_router.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/connect_l3_host_router.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "connect_l2_network.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "connect_l2_network.sh: "
-time $DIRECTORY/setup/connect_l2_network.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/connect_l2_network.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "connect_internal_routers.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "connect_internal_routers.sh: "
-time $DIRECTORY/setup/connect_internal_routers.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/connect_internal_routers.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "connect_external_routers.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "connect_external_routers.sh: "
-time $DIRECTORY/setup/connect_external_routers.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/connect_external_routers.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "configure_ssh.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "configure_ssh.sh: "
-time $DIRECTORY/setup/configure_ssh.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/configure_ssh.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "connect_services.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "connect_services.sh: "
-time $DIRECTORY/setup/connect_services.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/connect_services.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "layer2_config.sh: "
 echo "layer2_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/layer2_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/layer2_config.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "router_config.sh: "
 echo "router_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/router_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/router_config.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "mpls.sh: "
 echo "mpls.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/mpls_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/mpls_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
@@ -207,14 +209,14 @@ sleep 10
 
 echo "rpki_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "rpki_setup.sh: "
-time $DIRECTORY/setup/rpki_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/rpki_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
 
 echo "website_setup.sh: "
 echo "website_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/website_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/website_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
@@ -229,7 +231,7 @@ echo ""
 # TODO 
 echo "history_setup.sh: "
 echo "history_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/history_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/history_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
@@ -246,7 +248,7 @@ echo ""
 # TODO 
 echo "Applying hijacks: "
 echo "hijacks $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/hijack_config.py "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/hijack_config.py "${DIRECTORY}"
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"
 
@@ -259,6 +261,6 @@ sleep 10
 
 echo "Refreshing selected advertisements: "
 echo "bgp_clear $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time $DIRECTORY/setup/bgp_clear.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/bgp_clear.sh "${DIRECTORY}"
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"

@@ -17,7 +17,7 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
@@ -26,7 +26,7 @@ fi
 connect_one_link_group() {
 
     # check enough arguments are provided
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: connect_one_link_group <ExtLinkFile>"
         exit 1
     fi
@@ -53,13 +53,12 @@ connect_one_link_group() {
     wait
 }
 
-DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+DIRECTORY=$1
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-# readarray ExternalLinks < "${CONFIG_DIRECTORY}"/aslevel_links.txt
+# readarray ExternalLinks < "${DIRECTORY}"/config/aslevel_links.txt
 
 # first compute independent links that can be parallelized
 python3 "${DIRECTORY}"/setup/_compute_independent_ext_links.py "${DIRECTORY}"
@@ -73,4 +72,4 @@ wait
 
 # delete temporary link files
 # can be reused in rpki config
-# rm -f "${CONFIG_DIRECTORY}"/_aslevel_links_*.txt
+# rm -f "${DIRECTORY}"/config/_aslevel_links_*.txt

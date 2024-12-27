@@ -6,7 +6,7 @@ set -o nounset
 
 . bgptest.sh
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
 	err "usage: $0 id"
 fi
 

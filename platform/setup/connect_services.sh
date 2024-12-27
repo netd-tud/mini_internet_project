@@ -16,20 +16,19 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
 
 
 DIRECTORY=$(readlink -f $1)
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/variables.sh
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/variables.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 # check if each service is required
@@ -51,7 +50,7 @@ if [[ "$MeasureRequired" == "True" ]]; then
         -v /etc/timezone:/etc/timezone:ro \
         -v /etc/localtime:/etc/localtime:ro \
         -v \
-        "${CONFIG_DIRECTORY}"/measurement_welcome_message.txt:/etc/motd:rw \
+        "${DIRECTORY}"/config/measurement_welcome_message.txt:/etc/motd:rw \
         --cap-add=NET_ADMIN \
         --network="bridge" -p 2099:22 \
         "${DOCKERHUB_PREFIX}d_measurement" > /dev/null
@@ -152,7 +151,7 @@ for ((k = 0; k < GroupNumber; k++)); do
 
     if [ "${GroupType}" != "IXP" ]; then
 
-        readarray Routers < "${CONFIG_DIRECTORY}"/$GroupRouterConfig
+        readarray Routers < "${DIRECTORY}"/config/$GroupRouterConfig
         RouterNumber=${#Routers[@]}
 
         # Direct ssh access to the measurement container for each group:

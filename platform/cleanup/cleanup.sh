@@ -20,7 +20,6 @@ if (($UID != 0)); then
 fi
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
 
 # kill all container
 ./cleanup/container_cleanup.sh "${DIRECTORY}"

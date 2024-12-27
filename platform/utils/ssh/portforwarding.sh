@@ -14,9 +14,9 @@ echo "DEPRECATED: this script is no longer needed."
 
 DIRECTORY=$(pwd)
 echo $DIRECTORY
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 group_numbers=${#groups[@]}
 
 for ((k=0;k<group_numbers;k++)); do

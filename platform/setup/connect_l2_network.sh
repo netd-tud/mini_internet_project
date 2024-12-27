@@ -16,23 +16,22 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
 
-DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+DIRECTORY=$1
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-source "${CONFIG_DIRECTORY}"/variables.sh
+source "${DIRECTORY}"/config/variables.sh
 
 # Needed to create the VLAN on the router interface
 modprobe 8021q
 
-readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 # TODO: Specify link properties to a gateway router in a config file instead.
@@ -47,10 +46,10 @@ for ((k = 0; k < GroupNumber; k++)); do
 
     if [ "${GroupType}" != "IXP" ]; then
 
-        readarray Routers < "${CONFIG_DIRECTORY}/$GroupRouterConfig"
-        readarray L2Switches < "${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
-        readarray L2Links < "${CONFIG_DIRECTORY}/$GroupL2LinkConfig"
-        readarray L2Hosts < "${CONFIG_DIRECTORY}/$GroupL2HostConfig"
+        readarray Routers < "${DIRECTORY}/config/$GroupRouterConfig"
+        readarray L2Switches < "${DIRECTORY}/config/$GroupL2SwitchConfig"
+        readarray L2Links < "${DIRECTORY}/config/$GroupL2LinkConfig"
+        readarray L2Hosts < "${DIRECTORY}/config/$GroupL2HostConfig"
 
         L2SwitchNumber=${#L2Switches[@]}
         L2LinkNumber=${#L2Links[@]}

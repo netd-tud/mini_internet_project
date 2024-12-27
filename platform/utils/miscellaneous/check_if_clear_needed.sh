@@ -13,14 +13,13 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
 GROUP="${2:-}"
 
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 readarray routinator_containers < "${DIRECTORY}"/groups/rpki/routinator_containers.txt
 
 group_numbers=${#groups[@]}
@@ -37,7 +36,7 @@ for ((k=0;k<group_numbers;k++)); do
 
     (
         if [ "${group_as}" != "IXP" ]; then
-            readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+            readarray routers < "${DIRECTORY}"/config/$group_router_config
             readarray routinator_addrs < "${DIRECTORY}/groups/g${group_number}/routinator.txt"
 
             n_routers=${#routers[@]}

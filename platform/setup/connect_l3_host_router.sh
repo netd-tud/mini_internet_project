@@ -18,18 +18,17 @@ if (($UID != 0)); then
 fi
 
 # print the usage if not enough arguments are provided
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <directory>"
     exit 1
 fi
 
-DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+DIRECTORY=$1
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray ASConfig < "${DIRECTORY}"/config/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 for ((k = 0; k < GroupNumber; k++)); do
@@ -41,7 +40,7 @@ for ((k = 0; k < GroupNumber; k++)); do
 
     if [ "${GroupType}" != "IXP" ]; then
 
-        readarray Routers < "${CONFIG_DIRECTORY}"/$GroupRouterConfig
+        readarray Routers < "${DIRECTORY}"/config/$GroupRouterConfig
         RouterNumber=${#Routers[@]}
 
         # check whether there exists the same router in the first column of Routers,

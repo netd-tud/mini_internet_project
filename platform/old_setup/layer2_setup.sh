@@ -11,15 +11,14 @@ set -o nounset
 
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 source "${DIRECTORY}"/setup/ovs-docker.sh
 
 # Needed to create the VLAN on the router interface
 modprobe 8021q
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 group_numbers=${#groups[@]}
 
 
@@ -37,10 +36,10 @@ for ((k=0;k<group_numbers;k++)); do
 
     if [ "${group_as}" != "IXP" ];then
 
-        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
-        readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
-        readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
-        readarray l2_links < "${CONFIG_DIRECTORY}"/$group_layer2_links
+        readarray routers < "${DIRECTORY}"/config/$group_router_config
+        readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
+        readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
+        readarray l2_links < "${DIRECTORY}"/config/$group_layer2_links
         n_routers=${#routers[@]}
         n_l2_switches=${#l2_switches[@]}
         n_l2_hosts=${#l2_hosts[@]}

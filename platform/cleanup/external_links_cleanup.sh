@@ -8,12 +8,11 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
-readarray extern_links < "${CONFIG_DIRECTORY}"/aslevel_links.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray extern_links < "${DIRECTORY}"/config/aslevel_links.txt
 
 group_numbers=${#groups[@]}
 n_extern_links=${#extern_links[@]}

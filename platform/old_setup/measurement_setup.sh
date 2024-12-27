@@ -8,12 +8,11 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
 DOCKERHUB_USER="${2:-thomahol}"
-source "${CONFIG_DIRECTORY}"/subnet_config.sh
+source "${DIRECTORY}"/config/subnet_config.sh
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 group_numbers=${#groups[@]}
 
 # Check if there is a DNS server
@@ -24,7 +23,7 @@ for ((k=0;k<group_numbers;k++)); do
     group_router_config="${group_k[3]}"
 
     if [ "${group_as}" != "IXP" ];then
-        if grep -Fq "MEASUREMENT" "${CONFIG_DIRECTORY}"/$group_router_config; then
+        if grep -Fq "MEASUREMENT" "${DIRECTORY}"/config/$group_router_config; then
             is_msm=1
         fi
     fi
@@ -69,7 +68,7 @@ else
 
         if [ "${group_as}" != "IXP" ];then
 
-            readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+            readarray routers < "${DIRECTORY}"/config/$group_router_config
             n_routers=${#routers[@]}
 
             for ((i=0;i<n_routers;i++)); do

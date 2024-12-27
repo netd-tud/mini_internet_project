@@ -5,10 +5,9 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-CONFIG_DIRECTORY="$2"
 
 # read configs
-readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
+readarray groups < "${DIRECTORY}"/config/AS_config.txt
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 group_numbers=${#groups[@]}
 
@@ -30,10 +29,10 @@ for ((k = 0; k < group_numbers; k++)); do
 
         if [ "${group_as}" != "IXP" ]; then
 
-            readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
-            readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
-            readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
-            readarray l2_links < "${CONFIG_DIRECTORY}"/$group_layer2_links
+            readarray routers < "${DIRECTORY}"/config/$group_router_config
+            readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
+            readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
+            readarray l2_links < "${DIRECTORY}"/config/$group_layer2_links
             n_routers=${#routers[@]}
             n_l2_switches=${#l2_switches[@]}
             n_l2_hosts=${#l2_hosts[@]}
