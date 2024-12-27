@@ -28,13 +28,14 @@ def measurement_subnets(asn, router_id):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("directory", type=Path, default=Path.cwd(), nargs="?")
+parser.add_argument("config_directory", type=Path, help="Directory where the config files are located.")
 parser.add_argument("--undo", action="store_true")
 parser.add_argument("--dry", action="store_true")
 
 
-def load_config(current_directory):
+def load_config(config_directory):
     """Load config files to determine IPs in the L3 topology."""
-    configdir = Path(current_directory) / "config"
+    configdir = Path(config_directory)  # Use the provided config_directory
     AS_config_file = configdir / "AS_config.txt"
     hijack_file = configdir / "hijacks.txt"
 
@@ -239,10 +240,11 @@ def make_executable(path):
 if __name__ == "__main__":
     parsed = parser.parse_args()
     _dir = parsed.directory
+    _config_dir = parsed.config_directory
     undo = parsed.undo
     dry = parsed.dry
 
-    _hijacks, _router_ips, _measurement_nets = load_config(_dir)
+    _hijacks, _router_ips, _measurement_nets = load_config(_config_dir)
     config = dict(
         router_ips=_router_ips, measurement_nets=_measurement_nets,
         directory=_dir, undo=undo, dry=dry,

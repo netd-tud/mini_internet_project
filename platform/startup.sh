@@ -189,7 +189,6 @@ echo ""
 
 echo "router_config.sh: "
 echo "router_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-# TODO does router config need the config directory?
 time $DIRECTORY/setup/router_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 echo ""
@@ -247,7 +246,6 @@ echo ""
 # TODO 
 echo "Applying hijacks: "
 echo "hijacks $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-# TODO does hijack_config need the config directory?
 time $DIRECTORY/setup/hijack_config.py "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"
