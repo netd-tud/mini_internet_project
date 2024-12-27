@@ -57,8 +57,6 @@ echo $DIRECTORY
 CONFIG_DIRECTORY="${DIRECTORY}"/config
 if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
   CONFIG_DIRECTORY="$1"
-else
-  CONFIG_DIRECTORY="${DIRECTORY}"/config
 fi
 echo $CONFIG_DIRECTORY
 
