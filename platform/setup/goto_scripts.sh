@@ -8,10 +8,15 @@ set -o xtrace
 set -o nounset
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 
 n_groups=${#groups[@]}
 
@@ -29,10 +34,10 @@ for ((k=0;k<n_groups;k++)); do
 
     if [ "${group_as}" != "IXP" ];then
 
-        readarray routers < "${DIRECTORY}"/config/$group_router_config
-        readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
-        readarray l2_hosts < "${DIRECTORY}"/config/$group_layer2_hosts
-        readarray l2_links < "${DIRECTORY}"/config/$group_layer2_links
+        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+        readarray l2_switches < "${CONFIG_DIRECTORY}"/$group_layer2_switches
+        readarray l2_hosts < "${CONFIG_DIRECTORY}"/$group_layer2_hosts
+        readarray l2_links < "${CONFIG_DIRECTORY}"/$group_layer2_links
         n_routers=${#routers[@]}
         n_l2_switches=${#l2_switches[@]}
         n_l2_hosts=${#l2_hosts[@]}

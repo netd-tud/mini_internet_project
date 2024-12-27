@@ -18,11 +18,16 @@ set -o nounset
 set -o xtrace
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 
 n_groups=${#groups[@]}
 
@@ -84,8 +89,8 @@ for ((j = 0; j < n_groups; j++)); do
     touch "${DIRECTORY}/groups/g${group_number}/routinator.txt"
 
     if [ "${group_as}" != "IXP" ]; then
-        readarray routers < "${DIRECTORY}"/config/$group_router_config
-        readarray intern_links < "${DIRECTORY}"/config/$group_internal_links
+        readarray routers < "${CONFIG_DIRECTORY}"/$group_router_config
+        readarray intern_links < "${CONFIG_DIRECTORY}"/$group_internal_links
         n_routers=${#routers[@]}
         n_intern_links=${#intern_links[@]}
 
