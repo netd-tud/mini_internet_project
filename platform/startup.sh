@@ -6,6 +6,7 @@
 set -o errexit # exit on error
 set -o pipefail # catch errors in pipelines
 set -o nounset # exit on undeclared variable
+set -o xtrace # bash -v or bash -x for debugging
 
 # Check for programs we'll need.
 search_path () {
@@ -52,11 +53,12 @@ fi
 # DIRECTORY is the location of this startup.sh file
 DIRECTORY=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 echo $DIRECTORY
+#TODO Working dir, with /groups auch parametrisiert
 CONFIG_DIRECTORY="${DIRECTORY}"/config
 if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
   CONFIG_DIRECTORY="$1"
 fi
-
+echo $CONFIG_DIRECTORY
 
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"

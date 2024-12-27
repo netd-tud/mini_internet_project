@@ -5,6 +5,7 @@
 
 # sanity check
 # set -x
+set -o xtrace
 trap 'exit 1' ERR
 set -o errexit
 set -o pipefail

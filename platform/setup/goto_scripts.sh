@@ -4,6 +4,7 @@
 
 set -o errexit
 set -o pipefail
+set -o xtrace
 set -o nounset
 
 DIRECTORY="$1"

@@ -672,7 +672,7 @@ restart_one_l2_switch() {
 # restart an ixp
 restart_one_ixp() {
     # check enough arguments are provided
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: reconnect_one_ixp <AS>"
         exit 1
     fi
@@ -740,7 +740,7 @@ restart_one_ixp() {
 # restart an ssh proxy container
 restart_one_ssh() {
     # check enough arguments are provided
-    if [ "$#" -ne 2 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "Usage: restart_one_ssh <AS>"
         exit 1
     fi
@@ -976,28 +976,28 @@ case $1 in
         restart_one_ssh "${CurrentAS}"
         ;;
     matrix)
-        if [ "$#" -ne 2 ]; then
+        if [ "$#" -ne 1 ]; then
         print_usage
         exit 1
            fi
         restart_matrix
         ;;
     dns)
-        if [ "$#" -ne 2 ]; then
+        if [ "$#" -ne 1 ]; then
         print_usage
         exit 1
            fi
         restart_dns
         ;;
     measurement)
-        if [ "$#" -ne 2 ]; then
+        if [ "$#" -ne 1 ]; then
         print_usage
         exit 1
            fi
         restart_mesaurement
         ;;
     web)
-        if [ "$#" -ne 2 ]; then
+        if [ "$#" -ne 1 ]; then
         print_usage
         exit 1
            fi

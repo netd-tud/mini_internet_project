@@ -15,6 +15,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
+set -o xtrace
 
 DIRECTORY="$1"
 CONFIG_DIRECTORY="$2"
