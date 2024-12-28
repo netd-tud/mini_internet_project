@@ -21,12 +21,16 @@ if [[ ! $(basename "$PWD") == "platform" ]]; then
 fi
 
 DIRECTORY=$(pwd)
-source "${DIRECTORY}"/config/variables.sh
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/variables.sh
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 source "${DIRECTORY}"/setup/_parallel_helper.sh
 source "${DIRECTORY}"/groups/docker_pid.map
 source "${DIRECTORY}"/setup/_connect_utils.sh
-readarray ASConfig <"${DIRECTORY}"/config/AS_config.txt
+readarray ASConfig <"${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 print_usage() {
@@ -789,7 +793,7 @@ restart_mesaurement() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array
@@ -834,7 +838,7 @@ restart_dns() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array
@@ -901,7 +905,7 @@ restart_matrix() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            readarray Routers <"${DIRECTORY}"/config/$GroupRouterConfig
+            readarray Routers <"${CONFIG_DIRECTORY}"/$GroupRouterConfig
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})      # router config file array

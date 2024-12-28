@@ -10,11 +10,15 @@ set -o nounset
 
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 
 
 # read configs
-readarray groups < "${DIRECTORY}"/config/AS_config.txt
+readarray groups < "${CONFIG_DIRECTORY}"/AS_config.txt
 group_numbers=${#groups[@]}
 
 

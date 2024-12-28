@@ -317,6 +317,12 @@ check_service_is_required() {
         exit 1
     fi
 
+    DIRECTORY="$1"
+    CONFIG_DIRECTORY="${DIRECTORY}"/config
+    if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+        CONFIG_DIRECTORY="$2"
+    fi
+
     local ServiceName=$1
     local ServiceRequired=False
 
@@ -326,7 +332,7 @@ check_service_is_required() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [ "${GroupType}" != "IXP" ]; then
-            if grep -Fq "${ServiceName}" "${DIRECTORY}"/config/$GroupRouterConfig; then
+            if grep -Fq "${ServiceName}" "${CONFIG_DIRECTORY}"/$GroupRouterConfig; then
                 ServiceRequired=True
                 break
             fi

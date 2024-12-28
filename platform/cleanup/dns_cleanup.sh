@@ -8,7 +8,11 @@ set -o pipefail
 set -o nounset
 
 DIRECTORY="$1"
-source "${DIRECTORY}"/config/subnet_config.sh
+CONFIG_DIRECTORY="${DIRECTORY}"/config
+if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
+  CONFIG_DIRECTORY="$2"
+fi
+source "${CONFIG_DIRECTORY}"/subnet_config.sh
 
 echo -n "-- --if-exists del-br dns " >> "${DIRECTORY}"/ovs_command.txt
 
