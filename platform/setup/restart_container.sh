@@ -20,10 +20,16 @@ if [[ ! $(basename "$PWD") == "platform" ]]; then
     exit 1
 fi
 
+# check enough arguments are provided
+if [ "$#" -ne 1 ]; then
+  echo "Usage: ${0##*/} <path_to_config_directory>"
+  exit 1
+fi
+
 DIRECTORY=$(pwd)
 CONFIG_DIRECTORY="${DIRECTORY}"/config
-if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
-  CONFIG_DIRECTORY="$2"
+if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
+  CONFIG_DIRECTORY="$1"
 fi
 source "${CONFIG_DIRECTORY}"/variables.sh
 source "${CONFIG_DIRECTORY}"/subnet_config.sh
@@ -807,7 +813,7 @@ restart_mesaurement() {
         fi
     done
 
-    if [ "$(check_service_is_required "DNS")" == "True" ]; then
+    if [ "$(check_service_is_required "DNS" "${CONFIG_DIRECTORY}")" == "True" ]; then
         connect_service_interfaces \
             "MEASUREMENT" "dns" "$(subnet_router_DNS -1 "measurement")" \
             "DNS" "measurement" "$(subnet_router_DNS -1 "dns-measurement")" \
@@ -852,7 +858,7 @@ restart_dns() {
         fi
     done
 
-    if [ "$(check_service_is_required "MEASUREMENT")" == "True" ]; then
+    if [ "$(check_service_is_required "MEASUREMENT" "${CONFIG_DIRECTORY}")" == "True" ]; then
         connect_service_interfaces \
             "DNS" "measurement" "$(subnet_router_DNS -1 "dns-measurement")" \
             "MEASUREMENT" "dns" "$(subnet_router_DNS -1 "measurement")" \

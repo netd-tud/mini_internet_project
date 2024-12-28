@@ -36,9 +36,9 @@ readarray ASConfig < "${CONFIG_DIRECTORY}"/AS_config.txt
 GroupNumber=${#ASConfig[@]}
 
 # check if each service is required
-MeasureRequired=$(check_service_is_required "MEASUREMENT")
-DNSRequired=$(check_service_is_required "DNS")
-MatrixRequired=$(check_service_is_required "MATRIX")
+MeasureRequired=$(check_service_is_required "MEASUREMENT" "${CONFIG_DIRECTORY}")
+DNSRequired=$(check_service_is_required "DNS" "${CONFIG_DIRECTORY}")
+MatrixRequired=$(check_service_is_required "MATRIX" "${CONFIG_DIRECTORY}")
 
 # start measurement container
 # ssh is configured for remote access, and we add direct access below.

@@ -312,16 +312,12 @@ is_krill_or_routinator() {
 check_service_is_required() {
 
     # check enough arguments are provided
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: check_service_is_required <ServiceName>"
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: check_service_is_required <ServiceName> <path_to_config_directory>"
         exit 1
     fi
 
-    DIRECTORY="$1"
-    CONFIG_DIRECTORY="${DIRECTORY}"/config
-    if [ -n "${2:-}" ] && [ -d "$2" ] && [ "$(basename "$2")" = "config" ]; then
-        CONFIG_DIRECTORY="$2"
-    fi
+    CONFIG_DIRECTORY="$2"
 
     local ServiceName=$1
     local ServiceRequired=False
