@@ -1,6 +1,18 @@
 #!/bin/bash
 
+# check enough arguments are provided
+if [ "$#" -ne 1 ]; then
+  echo "Usage: restart_mini_internet <path_to_Config_Directory>"
+  echo "Be careful if multiple configs exist, chose the rigth one!"
+  exit 1
+fi
+
 WORKDIR="$(pwd)/"
+CONFIG_DIRECTORY="${WORKDIR}"/config
+if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
+  CONFIG_DIRECTORY="$1"
+fi
+
 routers=('ZURI' 'BASE' 'GENE' 'LUGA' 'MUNI' 'LYON' 'VIEN' 'MILA')
 dchosts=('FIFA' 'UEFA')
 
@@ -38,7 +50,7 @@ reset_with_startup() {
   
   # Hard reset
   echo "Executing cleanup.sh & hard_reset.sh ..."
-  ./cleanup/cleanup.sh .
+  ./cleanup/cleanup.sh . "${CONFIG_DIRECTORY}"
   ./cleanup/hard_reset.sh .
 
   # Then startup

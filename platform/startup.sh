@@ -64,7 +64,7 @@ echo $CONFIG_DIRECTORY
 echo "$(date +%Y-%m-%d_%H-%M-%S)"
 
 echo "hard_reset.sh"
-# time ./cleanup/cleanup.sh "${DIRECTORY}"
+# time ./cleanup/cleanup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 time $DIRECTORY/cleanup/hard_reset.sh
 
@@ -98,7 +98,7 @@ echo ""
 
 echo "dns_config.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "dns_config.sh: "
-time $DIRECTORY/setup/dns_config.sh "${DIRECTORY}"  "${CONFIG_DIRECTORY}"
+time $DIRECTORY/setup/dns_config.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 echo ""
 echo ""
