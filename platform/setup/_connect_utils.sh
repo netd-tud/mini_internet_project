@@ -38,13 +38,20 @@ get_dc_name_to_id() {
     declare -A DCNameToId
     local NextDCId=0
 
+    # check enough arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: get_dc_name_to_id <CurrentAS> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$2"
+
     for ((k = 0; k < GroupNumber; k++)); do
         GroupK=(${ASConfig[$k]})         # group config file array
         GroupAS="${GroupK[0]}"           # ASN
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -73,6 +80,13 @@ get_unique_vlan_set() {
     local CurrentAS=$1
     local VlanSet=()
 
+    # check enough arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: get_unique_vlan_set <CurrentAS> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$2"
+
     # get the router config file name from ASConfig,
     for ((k = 0; k < GroupNumber; k++)); do
         GroupK=(${ASConfig[$k]})         # group config file array
@@ -80,7 +94,7 @@ get_unique_vlan_set() {
         GroupL2HostConfig="${GroupK[6]}" # l2 host config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -107,6 +121,13 @@ get_dc_name_to_gateway_number() {
     local CurrentAS=$1
     declare -A DCNameToGatewayNumber
 
+    # check enough arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: get_dc_name_to_gateway_number <CurrentAS> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$2"
+
     for ((k = 0; k < GroupNumber; k++)); do
         GroupK=(${ASConfig[$k]})         # group config file array
         GroupAS="${GroupK[0]}"           # ASN
@@ -114,7 +135,7 @@ get_dc_name_to_gateway_number() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -143,6 +164,13 @@ get_dc_name_to_gateway_number() {
 get_l2_host_to_vlan_id() {
 
     local CurrentAS=$1
+
+    # check enough arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: get_l2_host_to_vlan_id <CurrentAS> <path_to_config_directory>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$2"
 
     declare -A DCNameToGatewayNumber
     while read -r DCName GatewayNumber; do
@@ -173,7 +201,7 @@ get_l2_host_to_vlan_id() {
         GroupL2HostConfig="${GroupK[6]}" # l2 host config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -198,13 +226,20 @@ is_all_in_one() {
 
     local CurrentAS=$1
 
+    # check enough arguments are provided
+    if [ "$#" -ne 2 ]; then
+        echo "Usage: is_all_in_one <CurrentAS> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$2"
+
     for ((k = 0; k < GroupNumber; k++)); do
         GroupK=(${ASConfig[$k]})         # group config file array
         GroupAS="${GroupK[0]}"           # ASN
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -227,6 +262,14 @@ get_region_id() {
     local CurrentAS=$1
     local CurrentRegion=$2
 
+    # check enough arguments are provided
+    if [ "$#" -ne 3 ]; then
+        echo "Usage: get_region_id <CurrentAS> <CurrentRegion> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$3"
+
+
     # get the router config file name from ASConfig,
     for ((k = 0; k < GroupNumber; k++)); do
         GroupK=(${ASConfig[$k]})         # group config file array
@@ -235,7 +278,7 @@ get_region_id() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -257,6 +300,13 @@ is_krill_or_routinator() {
     local HostName=$3
     local Device=$4 # krill/routinator
 
+    # check enough arguments are provided
+    if [ "$#" -ne 5 ]; then
+        echo "Usage: is_krill_or_routinator <CurrentAS> <CurrentRegion> <HostName> <Device> <CONFIG_DIRECTORY>"
+        exit 1
+    fi
+    CONFIG_DIRECTORY="$5"
+
     # use suffix to distinguish different hosts in all-in-one router config
     local HostSuffix=$(echo "${HostName}" | sed 's/host//')
 
@@ -270,7 +320,7 @@ is_krill_or_routinator() {
         local IsAllInOne=$(_is_all_in_one "${CurrentAS}")
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
             RouterNumber=${#Routers[@]}
             for ((i = 0; i < RouterNumber; i++)); do
                 RouterI=(${Routers[$i]})
@@ -314,10 +364,9 @@ check_service_is_required() {
 
     # check enough arguments are provided
     if [ "$#" -ne 2 ]; then
-        echo "Usage: check_service_is_required <ServiceName> <path_to_config_directory>"
+        echo "Usage: check_service_is_required <ServiceName> <CONFIG_DIRECTORY>"
         exit 1
     fi
-
     CONFIG_DIRECTORY="$2"
 
     local ServiceName=$1
