@@ -69,8 +69,8 @@ restart_one_l3_host() {
     local CurrentHostName=$3
     local HasConfig=$(has_config "${CurrentAS}")
 
-    local IsKrill=$(is_krill_or_routinator "${CurrentAS}" "${CurrentHostName}" "{CurrentRegion}" "krill")
-    local IsRoutinator=$(is_krill_or_routinator "${CurrentAS}" "${CurrentRegion}" "{CurrentHostName}" "routinator")
+    local IsKrill=$(is_krill_or_routinator "${CurrentAS}" "${CurrentHostName}" "{CurrentRegion}" "krill" "${CONFIG_DIRECTORY}")
+    local IsRoutinator=$(is_krill_or_routinator "${CurrentAS}" "${CurrentRegion}" "{CurrentHostName}" "routinator" "${CONFIG_DIRECTORY}")
 
     local HostSuffix=$(echo "${CurrentHostName}" | sed 's/host//')
     local HostCtnName="${CurrentAS}_${CurrentRegion}host${HostSuffix}"
@@ -116,11 +116,11 @@ restart_one_l3_host() {
         echo "Updated routinator on host ${HostCtnName}"
     fi
 
-    local IsAllInOne=$(is_all_in_one "${CurrentAS}")
+    local IsAllInOne=$(is_all_in_one "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
     if [[ "${HasConfig}" == "True" ]]; then
         if [[ "${IsAllInOne}" == "False" ]]; then
-            local RegionID=$(get_region_id "${CurrentAS}" "${CurrentRegion}")
+            local RegionID=$(get_region_id "${CurrentAS}" "${CurrentRegion}" "${CONFIG_DIRECTORY}")
             RouterSubnet="$(subnet_host_router "${CurrentAS}" "${RegionID}" "router")"
             HostSubnet="$(subnet_host_router "${CurrentAS}" "${RegionID}" "host")"
         else
@@ -208,10 +208,10 @@ restart_one_router() {
                 echo "Reconnected router ${RouterCtnName} to host ${HostCtnName}"
 
                 if [[ "${HasConfig}" == "True" ]]; then
-                    local IsAllInOne=$(is_all_in_one "${CurrentAS}")
+                    local IsAllInOne=$(is_all_in_one "${CurrentAS}" "${CONFIG_DIRECTORY}")
                     # configure the connected host
                     if [[ "${IsAllInOne}" == "False" ]]; then
-                        local RegionID=$(get_region_id "${CurrentAS}" "${CurrentRegion}")
+                        local RegionID=$(get_region_id "${CurrentAS}" "${CurrentRegion}" "${CONFIG_DIRECTORY}")
                         RouterSubnet="$(subnet_host_router "${CurrentAS}" "${RegionID}" "router")"
                         HostSubnet="$(subnet_host_router "${CurrentAS}" "${RegionID}" "host")"
                     else
@@ -232,12 +232,12 @@ restart_one_router() {
 
     # get the unique VLAN set used in the L2
     local VlanSet
-    IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}")"
+    IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}" "${CONFIG_DIRECTORY}")"
     # map from the DCName to the DCId
     declare -A DCNameToId
     while read -r DCName DCId; do
         DCNameToId["$DCName"]="$DCId"
-    done < <(get_dc_name_to_id "${CurrentAS}")
+    done < <(get_dc_name_to_id "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
     # map from the L2 gateway router to the DC Id
     declare -A RouterToDCId
@@ -271,7 +271,7 @@ restart_one_router() {
         # if the current router is the gateway router
         if [[ "${RouterName}" == "${CurrentRegion}" ]]; then
             # configure VLAN interfaces
-            RegionId=$(get_region_id "${CurrentAS}" "${CurrentRegion}")
+            RegionId=$(get_region_id "${CurrentAS}" "${CurrentRegion}" "${CONFIG_DIRECTORY}")
             for ((j = 0; j < ${#VlanSet[@]}; j++)); do
                 VlanTag="${VlanSet[$j]}"
                 RouterInterface="${CurrentRegion}-L2.$VlanTag"
@@ -285,8 +285,8 @@ restart_one_router() {
             if [[ "${HasConfig}" == "True" ]]; then
                 if [[ "${RouterName}" == "${TunnelEndA}" ]] || [[ "${RouterName}" == "${TunnelEndB}" ]]; then
                     # configure the 6in4 tunnel
-                    EndAId=$(get_region_id "${CurrentAS}" "${TunnelEndA}")
-                    EndBId=$(get_region_id "${CurrentAS}" "${TunnelEndB}")
+                    EndAId=$(get_region_id "${CurrentAS}" "${TunnelEndA}" "${CONFIG_DIRECTORY}")
+                    EndBId=$(get_region_id "${CurrentAS}" "${TunnelEndB}" "${CONFIG_DIRECTORY}")
                     if [[ "${RouterName}" == "${TunnelEndA}" ]]; then
                         RemoteSubnet=$(subnet_router "${CurrentAS}" "${EndBId}")
                         LocalSubnet=$(subnet_router "${CurrentAS}" "${EndAId}")
@@ -434,12 +434,12 @@ restart_one_l2_host() {
             declare -A DCNameToId
             while read -r DCName DCId; do
                 DCNameToId["$DCName"]="$DCId"
-            done < <(get_dc_name_to_id "${CurrentAS}")
+            done < <(get_dc_name_to_id "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
             declare -A HostToVlanId
             while read -r HostName VlanId; do
                 HostToVlanId[$HostName]=$VlanId
-            done < <(get_l2_host_to_vlan_id "${CurrentAS}")
+            done < <(get_l2_host_to_vlan_id "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
             readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
@@ -553,15 +553,15 @@ restart_one_l2_switch() {
             declare -A DCNameToId
             while read -r DCName DCId; do
                 DCNameToId["$DCName"]="$DCId"
-            done < <(get_dc_name_to_id "${CurrentAS}")
+            done < <(get_dc_name_to_id "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
             local VlanSet
-            IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}")"
+            IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}" "${CONFIG_DIRECTORY}")"
 
             declare -A HostToVlanId
             while read -r HostName VlanId; do
                 HostToVlanId[$HostName]=$VlanId
-            done < <(get_l2_host_to_vlan_id "${CurrentAS}")
+            done < <(get_l2_host_to_vlan_id "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
             # reconnect the switch to the router
             for ((i = 0; i < L2SwitchNumber; i++)); do

@@ -175,11 +175,11 @@ get_l2_host_to_vlan_id() {
     declare -A DCNameToGatewayNumber
     while read -r DCName GatewayNumber; do
         DCNameToGatewayNumber[$DCName]=$GatewayNumber
-    done < <(get_dc_name_to_gateway_number "${CurrentAS}")
+    done < <(get_dc_name_to_gateway_number "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
     # get all unique VLAN tags used in the L2
     local VlanSet
-    IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}")"
+    IFS=' ' read -r -a VlanSet <<<"$(get_unique_vlan_set "${CurrentAS}" "${CONFIG_DIRECTORY}")"
 
     declare -A DCVlanToHostId
     # for each dc stored in DCNameToGatewayNumber
@@ -317,7 +317,7 @@ is_krill_or_routinator() {
         GroupRouterConfig="${GroupK[3]}" # L3 router config file
 
         # check if it is an all-in-one AS
-        local IsAllInOne=$(_is_all_in_one "${CurrentAS}")
+        local IsAllInOne=$(_is_all_in_one "${CurrentAS}" "${CONFIG_DIRECTORY}")
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
             readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
