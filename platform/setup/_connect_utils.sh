@@ -6,7 +6,7 @@ trap 'exit 1' ERR
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+
 
 UTIL=${0##*/} # the name of this script
 

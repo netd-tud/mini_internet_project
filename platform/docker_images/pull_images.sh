@@ -5,7 +5,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+
 
 images=(router ixp host ssh measurement dns switch matrix vpn vlc hostm krill routinator webserver)
 

@@ -6,7 +6,7 @@
 set -o errexit # exit on error
 set -o pipefail # catch errors in pipelines
 set -o nounset # exit on undeclared variable
-set -o xtrace # bash -v or bash -x for debugging
+ # bash -v or bash -x for debugging
 
 # Check for programs we'll need.
 search_path () {

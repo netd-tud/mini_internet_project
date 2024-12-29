@@ -6,7 +6,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+
 
 subnet_group() {
   local n_grp="$1"

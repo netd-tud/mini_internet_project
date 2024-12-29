@@ -4,7 +4,7 @@ trap 'exit 1' ERR
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+
 #
 # Helper file defining a function which simplifies running for-loop cycles in
 # parallel.

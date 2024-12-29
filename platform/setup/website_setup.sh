@@ -15,7 +15,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -o xtrace
+
 
 DIRECTORY=$(readlink -f $1)
 CONFIG_DIRECTORY="${DIRECTORY}"/config
