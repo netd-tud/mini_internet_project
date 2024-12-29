@@ -26,8 +26,7 @@ fi
 source "${CONFIG_DIRECTORY}"/variables.sh
 
 # Source directories.
-DATADIR="$(pwd ${DIRECTORY})/groups"
-CONFIGDIR="$(pwd ${DIRECTORY})/config"
+DATADIR="${DIRECTORY}/groups"
 
 # Directory for server config.
 mkdir -p "${DATADIR}/webserver"
@@ -84,7 +83,7 @@ docker run -itd --name="WEB" --cpus=2 \
     --network="bridge" -p 8000:8000 \
     --pids-limit 100 \
     -v ${DATADIR}:${DATADIR_SERVER} \
-    -v ${CONFIGDIR}:${CONFIGDIR_SERVER} \
+    -v ${CONFIG_DIRECTORY}:${CONFIGDIR_SERVER} \
     -v ${CONFIGFILE}:/server/config.py \
     -e SERVER_CONFIG=/server/config.py \
     -e TZ=${WEBSERVER_TZ} \
