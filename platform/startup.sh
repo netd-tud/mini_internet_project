@@ -22,9 +22,9 @@ if (($UID != 0)); then
 fi
 
 # check dependencies and install if needed
-if command -v apt > /dev/null 2>&1; then
-    apt update
-    apt -y install openvswitch-switch bc uuid-runtime openvpn
+if command -v apt-get > /dev/null 2>&1; then
+    apt-get update
+    apt-get -y install openvswitch-switch bc uuid-runtime openvpn
 else
     echo "no apt found to install packages"
 fi
@@ -47,16 +47,13 @@ if (ip netns) > /dev/null 2>&1; then :; else
     exit 1
 fi
 
-# # TODO: check the directory is platform/
-#DIRECTORY=$(cd `dirname $0` && pwd)
-
 # DIRECTORY is the location of this startup.sh file
 DIRECTORY=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 echo $DIRECTORY
-#TODO Working dir, with /groups auch parametrisiert
+#TODO Working dir, with /groups also variable
 CONFIG_DIRECTORY="${DIRECTORY}"/config
 if [ -n "${1:-}" ] && [ -d "$1" ] && [ "$(basename "$1")" = "config" ]; then
-  CONFIG_DIRECTORY="$1"
+  CONFIG_DIRECTORY="${1%/}"
 fi
 echo $CONFIG_DIRECTORY
 
@@ -200,8 +197,7 @@ time $DIRECTORY/setup/mpls_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 echo ""
 echo ""
-
-# TODO 
+ 
 echo "Waiting 60sec for RPKI CA and proxy to startup.."
 sleep 10
 
@@ -226,7 +222,6 @@ time $DIRECTORY/groups/rpki/webserver_links.sh
 echo ""
 echo ""
 
-# TODO 
 echo "history_setup.sh: "
 echo "history_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 time $DIRECTORY/setup/history_setup.sh "${DIRECTORY}" "${CONFIG_DIRECTORY}"
@@ -243,7 +238,6 @@ fi
 echo ""
 echo ""
 
-# TODO 
 echo "Applying hijacks: "
 echo "hijacks $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 time $DIRECTORY/setup/hijack_config.py "${DIRECTORY}" "${CONFIG_DIRECTORY}"
@@ -253,7 +247,6 @@ echo "$(date +%Y-%m-%d_%H-%M-%S)"
 echo ""
 echo ""
 
-# TODO 
 echo "Waiting 60sec for BGP messages to propagate..."
 sleep 10
 
