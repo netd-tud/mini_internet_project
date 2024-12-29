@@ -77,12 +77,13 @@ def main(input_file, output_dir):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 _compute_independent_ext_links.py <directory>")
+    if len(sys.argv) != 3:
+        print("Usage: python3 _compute_independent_ext_links.py <directory> <config_directory>")
         sys.exit(1)
 
     directory = sys.argv[1]
-    input_file = f"{directory}/config/aslevel_links.txt"
+    config_directory = sys.argv[2]
+    input_file = f"{config_directory}/aslevel_links.txt"
     output_dir = f"{directory}/groups/aslevel_links/"
     os.makedirs(output_dir, exist_ok=True)
 

@@ -66,7 +66,7 @@ source "${DIRECTORY}"/setup/_connect_utils.sh
 # readarray ExternalLinks < "${CONFIG_DIRECTORY}"/aslevel_links.txt
 
 # first compute independent links that can be parallelized
-python3 "${DIRECTORY}"/setup/_compute_independent_ext_links.py "${DIRECTORY}"
+python3 "${DIRECTORY}"/setup/_compute_independent_ext_links.py "${DIRECTORY}" "${CONFIG_DIRECTORY}"
 
 # for each aslevel_links_*.txt file
 for CurrentLinkFile in "${DIRECTORY}"/groups/aslevel_links/aslevel_links_*.txt; do
