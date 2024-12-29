@@ -147,7 +147,7 @@ for ((k = 0; k < group_numbers; k++)); do
                 fi
 
                 # Apply ROA delta file if available for the group
-                if [[ -f "${DIRECTORY}/config/roas/g${group_number}.txt" ]]; then
+                if [[ -f "${CONFIG_DIRECTORY}/roas/g${group_number}.txt" ]]; then
                     docker exec $krill_container_name krillc roas update --ca "group${group_number}" --delta "/var/krill/roas/g${group_number}.txt" || true
                 fi
             fi

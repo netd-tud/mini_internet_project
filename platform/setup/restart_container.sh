@@ -173,10 +173,10 @@ restart_one_router() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray Routers <"${DIRECTORY}/config/$GroupRouterConfig"
-            readarray InternalLinks <"${DIRECTORY}/config/$GroupInternalLinkConfig"
-            readarray L2Switches <"${DIRECTORY}/config/$GroupL2SwitchConfig"
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray Routers <"${CONFIG_DIRECTORY}/$GroupRouterConfig"
+            readarray InternalLinks <"${CONFIG_DIRECTORY}/$GroupInternalLinkConfig"
+            readarray L2Switches <"${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
 
             RouterNumber=${#Routers[@]}
             InternalLinkNumber=${#InternalLinks[@]}
@@ -265,7 +265,7 @@ restart_one_router() {
     # configure the tunnel and vlan
     local RouterPID=$(get_container_pid "${RouterCtnName}" "False")
     create_netns_symlink "${RouterPID}"
-    read TunnelEndA TunnelEndB <"${DIRECTORY}/config/l2_tunnel.txt"
+    read TunnelEndA TunnelEndB <"${CONFIG_DIRECTORY}/l2_tunnel.txt"
     for RouterName in "${!RouterToDCId[@]}"; do
         DCId="${RouterToDCId[$RouterName]}"
         # if the current router is the gateway router
@@ -332,7 +332,7 @@ restart_one_router() {
     done
 
     # add the external link
-    readarray ExternalLinks <"${DIRECTORY}/config/aslevel_links.txt"
+    readarray ExternalLinks <"${CONFIG_DIRECTORY}/aslevel_links.txt"
     ExternalLinkNumber=${#ExternalLinks[@]}
 
     for ((i = 0; i < ExternalLinkNumber; i++)); do
@@ -441,7 +441,7 @@ restart_one_l2_host() {
                 HostToVlanId[$HostName]=$VlanId
             done < <(get_l2_host_to_vlan_id "${CurrentAS}")
 
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
             L2HostNumber=${#L2Hosts[@]}
             for ((i = 0; i < L2HostNumber; i++)); do
                 L2HostI=(${L2Hosts[$i]})
@@ -540,9 +540,9 @@ restart_one_l2_switch() {
 
         if [[ "${GroupAS}" == "${CurrentAS}" ]]; then
 
-            readarray L2Switches <"${DIRECTORY}/config/$GroupL2SwitchConfig"
-            readarray L2Hosts <"${DIRECTORY}/config/$GroupL2HostConfig"
-            readarray L2Links <"${DIRECTORY}/config/$GroupL2LinkConfig"
+            readarray L2Switches <"${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+            readarray L2Hosts <"${CONFIG_DIRECTORY}/$GroupL2HostConfig"
+            readarray L2Links <"${CONFIG_DIRECTORY}/$GroupL2LinkConfig"
             L2SwitchNumber=${#L2Switches[@]}
             L2HostNumber=${#L2Hosts[@]}
             L2LinkNumber=${#L2Links[@]}
@@ -707,7 +707,7 @@ restart_one_ixp() {
     sleep 300
 
     # connect all external links
-    readarray ExternalLinks <"${DIRECTORY}/config/aslevel_links.txt"
+    readarray ExternalLinks <"${CONFIG_DIRECTORY}/aslevel_links.txt"
     ExternalLinkNumber=${#ExternalLinks[@]}
     for ((i = 0; i < ExternalLinkNumber; i++)); do
         LinkI=(${ExternalLinks[$i]}) # external link row

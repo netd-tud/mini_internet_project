@@ -45,7 +45,7 @@ for ((k = 0; k < GroupNumber; k++)); do
 
         if [ "${GroupType}" != "IXP" ]; then
 
-            readarray InternalLinks < "${DIRECTORY}/config/$GroupInternalLinkConfig"
+            readarray InternalLinks < "${CONFIG_DIRECTORY}/$GroupInternalLinkConfig"
             IntLinkNumber=${#InternalLinks[@]}
 
             for ((i = 0; i < IntLinkNumber; i++)); do

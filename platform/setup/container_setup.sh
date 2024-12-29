@@ -265,7 +265,7 @@ for ((k = 0; k < group_numbers; k++)); do
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/krill.key:/var/krill/data/ssl/key.pem:ro")
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/krill.conf:/var/krill/krill.conf:ro")
                         additional_args+=("-v" "${DIRECTORY}/groups/g${group_number}/krill/setup.sh:/home/setup.sh:ro")
-                        additional_args+=("-v" "${DIRECTORY}/config/roas:/var/krill/roas:ro")
+                        additional_args+=("-v" "${CONFIG_DIRECTORY}/roas:/var/krill/roas:ro")
                         # Use bridge network for krill in order to connect to the web proxy container
                         # and use an https connection from the ouside world to reach the krill website
                         additional_args+=("-p" "3080:3080")

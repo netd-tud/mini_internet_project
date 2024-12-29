@@ -54,8 +54,8 @@ for ((k = 0; k < GroupNumber; k++)); do
     if [ "${GroupType}" != "IXP" ]; then
 
         readarray Routers < "${CONFIG_DIRECTORY}"/$GroupRouterConfig
-        readarray L2Switches < "${DIRECTORY}/config/$GroupL2SwitchConfig"
-        readarray L2Hosts < "${DIRECTORY}/config/$GroupL2HostConfig"
+        readarray L2Switches < "${CONFIG_DIRECTORY}/$GroupL2SwitchConfig"
+        readarray L2Hosts < "${CONFIG_DIRECTORY}/$GroupL2HostConfig"
 
         RouterNumber=${#Routers[@]}
         L2SwitchNumber=${#L2Switches[@]}
