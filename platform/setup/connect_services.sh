@@ -8,6 +8,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
+set -o xtrace
 
 # make sure the script is executed with root privileges
 if (($UID != 0)); then

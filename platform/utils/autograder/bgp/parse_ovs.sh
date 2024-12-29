@@ -1,6 +1,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
+set -o xtrace
 
 if [ "$#" != 1 ]; then
 	echo "usage: $0 username" 1>&2
