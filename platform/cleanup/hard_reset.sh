@@ -3,8 +3,14 @@
 # remove all container, bridges, network namespaces, and temporary files
 
 # Remove all containers
-docker rm -f $(docker ps -q) 2>/dev/null || echo "No containers to remove".
+# docker rm -f $(docker ps -q) 2>/dev/null || echo "No containers to remove".
 
+# Remove all networks except for the default ones
+for container in $(docker ps -q); do
+    if [[ ! $container =~ ^(a4402b986b62|950b96b2122f)$ ]]; then
+      docker rm -f $container
+    fi
+done
 
 # Remove all ovs-bridges
 if [ "$(ovs-vsctl list-br | wc -l )" != "0" ];then
@@ -24,7 +30,7 @@ ovs-vsctl emer-reset
 
 # Delete virtual interfaces except for known system interfaces.
 for n in $(ip -o link show | awk -F': ' '{print $2}'); do
-    if [[ ! $n =~ ^(en|lo|eth|docker0|virbr0|bond0) ]]; then
+    if [[ ! $n =~ ^(en|lo|eth|docker0|virbr0|bond0|br-289995bc19aa|vetha775d42@if15) ]]; then
         ip link delete $(echo $n | cut -d'@' -f 1)
     fi
 done
