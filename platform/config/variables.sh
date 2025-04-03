@@ -6,7 +6,8 @@
 
 # The prefix for the dockerhub images. Leave empty for local images.
 # If it isn't empty, it must end with a slash.
-DOCKERHUB_PREFIX="miniinterneteth/"
+# DOCKERHUB_PREFIX="miniinterneteth/"
+DOCKERHUB_PREFIX=""
 
 # This URL will be suggested as the default location for students
 # to download their configs. It should be publicly accessible via ssh at port
