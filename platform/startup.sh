@@ -182,12 +182,12 @@ time ./setup/rpki_setup.sh "${DIRECTORY}"
 echo ""
 echo ""
 
-echo "website_setup.sh: "
-echo "website_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time ./setup/website_setup.sh "${DIRECTORY}"
+# echo "website_setup.sh: "
+# echo "website_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
+# time ./setup/website_setup.sh "${DIRECTORY}"
 
-echo ""
-echo ""
+# echo ""
+# echo ""
 
 echo "webserver_links.sh: "
 echo "webserver_links.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
