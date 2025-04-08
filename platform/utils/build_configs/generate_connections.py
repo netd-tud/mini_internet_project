@@ -99,46 +99,46 @@ transit_as_topo = {
     # connection of AS to X: (AS city, AS role)
     # Example: The connection to the first provider is at Basel, and the AS
     # takes the role of a customer.
-    'provider1': ('BIRM', customer),
-    'provider2': ('FRAN', customer),
-    'customer1': ('BARC', provider),
-    'customer2': ('NAPL', provider),
+    'provider1': ('FRA', customer),
+    'provider2': ('MUC', customer),
+    'customer1': ('ZRH', provider),
+    'customer2': ('PRG', provider),
     # Peer and IXP.
-    'peer': ('MUNI', peer),
-    'ixp': ('LYON', peer),
+    'peer': ('HAM', peer),
+    'ixp': ('DRS', peer),
 }
 
 # All non-transit ASes only have a single router ZURI.
 
 tier1_topo = {
     # Tier 1 Ases have no providers, but more peers and two IXPs.
-    'ixp_central': ('ZURI', peer),
-    'ixp': ('ZURI', peer),
+    'ixp_central': ('DRS', peer),
+    'ixp': ('DRS', peer),
     # Other Tier 1.
-    'peer1': ('ZURI', peer),
-    'peer2': ('ZURI', peer),
+    'peer1': ('DRS', peer),
+    'peer2': ('DRS', peer),
     # Connections to customers.
-    'customer1': ('ZURI', provider),
-    'customer2': ('ZURI', provider),
+    'customer1': ('DRS', provider),
+    'customer2': ('DRS', provider),
 }
 
 # We use a minimal stub topo without hijacks, and the transit one with hijacks.
 stub_topo = transit_as_topo if ENABLE_STUB_HIJACKS else {
     # Same providers, but IXP and peer. are somewhere else.
-    "provider1": ("ZURI", customer),
-    "provider2": ("ZURI", customer),
-    "peer": ("ZURI", peer),
-    "ixp": ("ZURI", peer),
+    "provider1": ("DRS", customer),
+    "provider2": ("DRS", customer),
+    "peer": ("DRS", peer),
+    "ixp": ("DRS", peer),
 }
 
 buffer_topo = {
     # Looks like transit AS, but we only have a single router.
-    "provider1": ("ZURI", customer),
-    "provider2": ("ZURI", customer),
-    "customer1": ("ZURI", provider),
-    "customer2": ("ZURI", provider),
-    "peer": ("ZURI", peer),
-    "ixp": ("ZURI", peer),
+    "provider1": ("DRS", customer),
+    "provider2": ("DRS", customer),
+    "customer1": ("DRS", provider),
+    "customer2": ("DRS", provider),
+    "peer": ("DRS", peer),
+    "ixp": ("DRS", peer),
 }
 
 ixp_topo = {
