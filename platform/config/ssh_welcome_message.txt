@@ -1,15 +1,15 @@
 +------------------------------------------------------+
 |                                                      |
-|   Communication Networks 2024  - Routing Project     |
-|             Build your mini-Internet!                |
+|           Mini-Internet @ Rechnernetze 2025          |
+|               Build your mini-Internet!              |
 |                                                      |
 |   From here, you can access your virtual devices     |
 |   with the goto.sh script. For instance:             |
 |                                                      |
-|       ./goto.sh zuri router                          |
-|       ./goto.sh zuri host                            |
-|       ./goto.sh dcn  s1                              |
-|       ./goto.sh dcn  fifa_1                          |
+|       ./goto.sh drs router                           |
+|       ./goto.sh drs host                             |
+|       ./goto.sh l2s  s1                              |
+|       ./goto.sh l2s  a_admin                         |
 |                                                      |
 |   Or you can access the public measurement service:  |
 |                                                      |

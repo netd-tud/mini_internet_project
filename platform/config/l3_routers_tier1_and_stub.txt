@@ -1,4 +1,4 @@
-ZURI    MATRIX_TARGET routinator:miniinterneteth/d_routinator   vtysh ALL
-ZURI    DNS           N/A                                       vtysh ALL
-ZURI    MATRIX        N/A                                       vtysh ALL
-ZURI    MEASUREMENT   N/A                                       vtysh ALL
+DRS    MATRIX_TARGET routinator:miniinterneteth/d_routinator   vtysh ALL
+DRS    DNS           N/A                                       vtysh ALL
+DRS    MATRIX        N/A                                       vtysh ALL
+DRS    MEASUREMENT   N/A                                       vtysh ALL
