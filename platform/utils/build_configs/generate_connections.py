@@ -76,7 +76,7 @@ BUFFER_ADVERTISES_ALL_VIA_IXP = True
 # ---------------------
 
 AREAS = 2
-CONFIGURABLE_PER_AREA = 2  # Number of ASes that can be configured by students.
+CONFIGURABLE_PER_AREA = 10  # Number of ASes that can be configured by students.
 FIRST_IXP = 80
 
 # Define the connections and roles of the ASes in each topology.
