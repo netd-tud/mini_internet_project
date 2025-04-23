@@ -1,0 +1,12 @@
+FRA     HAM     1mbit 5ms    50ms
+FRA     BER     20mbit 5ms    50ms
+FRA     DRS     20mbit 5ms    50ms
+FRA     MUC     20mbit 5ms    50ms
+FRA     ZRH     10mbit 5ms    50ms
+FRA     AMS     20mbit 5ms    50ms
+HAM     AMS     20mbit 5ms    50ms
+HAM     BER     20mbit 5ms    50ms
+BER     DRS     1mbit 5ms    50ms
+DRS     PRG     20mbit 5ms    50ms
+MUC     PRG     20mbit 5ms    50ms
+MUC     ZRH     10mbit 5ms    50ms
