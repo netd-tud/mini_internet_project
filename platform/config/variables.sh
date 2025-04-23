@@ -69,7 +69,7 @@ MATRIX_PAUSE_AFTER_START=false
 # =============================================================================
 
 # Whether to enable the history collector.
-HISTORY_ENABLED=true
+HISTORY_ENABLED=false
 # Whether to pause the matrix container after starting it.
 # Can reduce disk usage when the mini internet is not used immediately.
 # Unpause container at any time with `docker container unpause HISTORY`
@@ -93,3 +93,7 @@ HISTORY_GIT_BRANCH="main"
 # recent update.
 # You must allow force pushing on the remove branch for this to work.
 HISTORY_FORGET_BINARIES="true"
+
+# Each router container has an observer process that gets the interface status in a fixed interval
+VPN_OBSERVER_SLEEP=120
+
