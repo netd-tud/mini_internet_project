@@ -42,6 +42,7 @@ if [ ! -z "$WEBSERVER_ACME_MAIL" ] && [ ! -z "$WEBSERVER_HOSTNAME" ] && [ "$WEBS
     --entrypoints.web.http.redirections.entrypoint.scheme=https \
     --entrypoints.web.http.redirections.entrypoint.permanent=true \
     --certificatesresolvers.project_resolver.acme.tlschallenge=true \
+    --certificatesresolvers.project_resolver.acme.caserver=${WEBSERVER_ACME_CASERVER:-https://acme-v02.api.letsencrypt.org/directory} \
     --certificatesresolvers.project_resolver.acme.email=${WEBSERVER_ACME_MAIL} \
     --certificatesresolvers.project_resolver.acme.storage=/letsencrypt/acme.json \
     --entrypoints.websecure.http.tls.certresolver=project_resolver \
