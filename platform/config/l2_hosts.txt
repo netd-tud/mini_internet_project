@@ -2,5 +2,3 @@ A_NETD   d_host L2E   S1    10mbit   1ms    50ms    10
 S_NETD   d_host L2E   S1    10mbit   1ms    50ms    20
 A_HPC   d_host L2E   S2    10mbit   1ms    50ms    10
 S_HPC   d_host L2E   S2    10mbit   1ms    50ms    20
-A_HAW   d_host L2N   S3    10mbit   1ms    50ms    10
-S_HAW   d_host L2N   S3    10mbit   1ms    50ms    20

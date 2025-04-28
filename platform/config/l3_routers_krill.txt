@@ -1,4 +1,4 @@
-DRS    MATRIX_TARGET routinator:d_routinator   vtysh ALL
-DRS    DNS           krill:d_krill             vtysh ALL
+DRS    MATRIX_TARGET host:d_host   vtysh ALL
+DRS    DNS           N/A             vtysh ALL
 DRS    MATRIX        N/A                                       vtysh ALL
 DRS    MEASUREMENT   N/A                                       vtysh ALL
