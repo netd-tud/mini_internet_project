@@ -1,8 +1,8 @@
 #!/bin/bash
 
 WORKDIR="$(pwd)/"
-routers=('ZURI' 'BASE' 'GENE' 'LUGA' 'MUNI' 'LYON' 'VIEN' 'MILA')
-dchosts=('FIFA' 'UEFA')
+routers=('DRS' 'BER' 'FRA' 'HAM' 'AMS' 'ZRH' 'MUC' 'PRG')
+dchosts=('A_NETD' 'S_NETD' 'A_HPC' 'S_HPC' 'A_HAW' 'S_HAW')
 
 # Variables for this script
 isDoBackup=false
@@ -110,14 +110,14 @@ EOF
     done
     
     # Restore switch files into switch
-    for sw in $(seq 1 4); do
+    for sw in $(seq 1 3); do
       cd $WORKDIR../students_config/
 
       # Init switch loc
       switch_name=S${sw}
-      data_center_loc='DCN'
-      if [[ $switch_name == 'S4' ]]; then
-        data_center_loc='DCS'
+      data_center_loc='L2E'
+      if [[ $switch_name == 'S3' ]]; then
+        data_center_loc='L2N'
       fi
 
       container_name=${as}_L2_${data_center_loc}_${switch_name}
@@ -135,34 +135,39 @@ EOF
 
     # Restore Datacenter Hosts
     for dc in ${dchosts[@]}; do
-      for i in $(seq 1 4); do
-        cd $WORKDIR../students_config/
+      # for i in $(seq 1 4); do
+      cd $WORKDIR../students_config/
 
-        # Init host loc
-        data_center_loc='DCN'
-        if [[ $i -eq 4 ]]; then
-          data_center_loc='DCS'
-        fi
+      # Init host loc
+      i=1
+      data_center_loc='L2E'
+      if [[ $dc == 'A_HPC' || $dc == 'S_HPC' ]]; then
+        i=2
+      fi
+      if [[ $dc == 'A_HAW' || $dc == 'S_HAW' ]]; then
+        i=3
+        data_center_loc='L2N'
+      fi
 
-        hostname=${dc}_${i}
-        container_name=${as}_L2_${data_center_loc}_${hostname}
+      hostname=${dc}
+      container_name=${as}_L2_${data_center_loc}_${hostname}
 
-        echo "Restoring $container_name configuration..."
-        # Get the IPv4 address
-        ipv4=$(cat ${configs_folder_name}${hostname}/host.ip | grep -w inet | grep ${as}-S${i} | awk '{print $2}')
-        echo "Backuped $container_name IPv4: ${ipv4}"
-        # Get the IPv6 address
-        ipv6=$(cat ${configs_folder_name}${hostname}/host.ip | grep -w inet6 | grep ${as}-S${i} | awk '{print $2}')
-        echo "Backuped $container_name IPv6: ${ipv6}"
-        # Get default route (IPv4 only?)
-        default_route=$(cat ${configs_folder_name}${hostname}/host.route | grep -w default | awk '{print $3}')
-        echo "Backuped $container_name Default Route: ${default_route}"
+      echo "Restoring $container_name configuration..."
+      # Get the IPv4 address
+      ipv4=$(cat ${configs_folder_name}${hostname}/host.ip | grep -w inet | grep ${as}-S${i} | awk '{print $2}')
+      echo "Backuped $container_name IPv4: ${ipv4}"
+      # Get the IPv6 address
+      ipv6=$(cat ${configs_folder_name}${hostname}/host.ip | grep -w inet6 | grep ${as}-S${i} | awk '{print $2}')
+      echo "Backuped $container_name IPv6: ${ipv6}"
+      # Get default route (IPv4 only?)
+      default_route=$(cat ${configs_folder_name}${hostname}/host.route | grep -w default | awk '{print $3}')
+      echo "Backuped $container_name Default Route: ${default_route}"
 
-        # Adding the IPv4 and IPv6 address
-        docker exec -itw /root ${container_name} ip address add ${ipv4} dev ${as}-S${i} &> /dev/null
-        docker exec -itw /root ${container_name} ip address add ${ipv6} dev ${as}-S${i} &> /dev/null
-        docker exec -itw /root ${container_name} ip route add default via ${default_route} &> /dev/null
-      done
+      # Adding the IPv4 and IPv6 address
+      docker exec -itw /root ${container_name} ip address add ${ipv4} dev ${as}-S${i} &> /dev/null
+      docker exec -itw /root ${container_name} ip address add ${ipv6} dev ${as}-S${i} &> /dev/null
+      docker exec -itw /root ${container_name} ip route add default via ${default_route} &> /dev/null
+      # done
     done
   done
 }
