@@ -6,7 +6,7 @@ EXPOSE 22/tcp
 # cpanminus and build-essential needed for this
 # RUN cpanm Net::BGP
 
-RUN apk add --no-cache openssh-client openssh-server zip ncurses \
+RUN apk add --no-cache openssh-client openssh-server openssh-sftp-server zip ncurses \
     && ssh-keygen -A \
     && mkdir -p /var/run/sshd /root/.ssh \
     && chmod 0755 /var/run/sshd
