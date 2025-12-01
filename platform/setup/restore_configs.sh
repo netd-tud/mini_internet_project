@@ -47,7 +47,7 @@ clear_config_vtysh() {
   local router_name="$2"
   local config
   echo -n "Clearing $router_name configuration: "
-  if ! config="$(_ssh $router_subnet vtysh -c 'sh run')"; then
+  if ! config="$(_ssh $router_subnet vtysh -c \'sh run\')"; then
     echo_red "Failed to load the current running configuration."
     return 1
   fi
@@ -78,6 +78,7 @@ clear_config_vtysh() {
       ' '*) ;;        # Skip commands that are not top-level
       '!'*) ;;        # Skip configuration separators
       'end'*) ;;      # Skip the final 'end'
+      'exit'*) ;;
       'line'*) ;;     # Don't remove 'line vty'
       'rpki'*) ;;     # There is no `no rpki` command.
       'hostname'*) ;; # Don't remove the hostname
@@ -95,6 +96,7 @@ clear_config_vtysh() {
         echo_red "Unexpected line: [$line] skipping"
         ;;
       *'link-params'*) ;; # Skip link-params sub-configuration, not supported
+      *'exit'*) state="toplevel" ;; # End of interface configuration block
       ' !') ;;            # Skip end of sub-configuration blocks
       ' '*)               # Remove this interface configuration line
         clear_command="${clear_command}no${line}"$'\n' ;;
@@ -111,7 +113,7 @@ clear_config_vtysh() {
   done
   clear_command="${clear_command}exit"$'\n'
 
-  if  _ssh "$router_subnet" vtysh -c "$clear_command" ; then
+  if  _ssh "$router_subnet" vtysh -c \'"$clear_command"\' ; then
     echo "Success"
   else
     echo_red "Failed, will attempt the restore regardless"
@@ -129,7 +131,7 @@ restore_config_vtysh() {
   local build_command="configure"$'\n'"${config#*frr defaults traditional}"
   echo -n "Restoring $router_name configuration: "
 
-  if _ssh "$router_subnet" vtysh -c "${build_command}" ; then
+  if _ssh "$router_subnet" vtysh -c \'"${build_command}"\' ; then
     echo "Success"
   else
     echo_red "Failed"
@@ -144,11 +146,11 @@ check_config_vtysh() {
   local config_restored
   config_restored="$(cat "$config_file")"
   echo -n "Verifying restored configuration on $3: "
-  if ! running_config="$(_ssh $router_subnet vtysh -c 'sh run')"; then
+  if ! running_config="$(_ssh $router_subnet vtysh -c \'sh run\')"; then
     echo_red "Failed to load the current running configuration."
     return 1
   fi
-
+  running_config="$(echo "${running_config//$'\r'}")"
   if [[ "$config_restored" != "$running_config" ]]; then
     echo_red "There is a difference between the backup and running config"
     echo_red "You should manually review and correct this difference"
