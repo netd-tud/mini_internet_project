@@ -1,6 +1,6 @@
 +------------------------------------------------------+
 |                                                      |
-|           Mini-Internet @ Rechnernetze 2025          |
+|           Mini-Internet @ Rechnernetze 2026          |
 |               Build your mini-Internet!              |
 |                                                      |
 |   From here, you can access your virtual devices     |

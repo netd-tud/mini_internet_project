@@ -3,6 +3,8 @@
 WORKDIR="$(pwd)/"
 routers=('DRS' 'BER' 'FRA' 'HAM' 'AMS' 'ZRH' 'MUC' 'PRG')
 dchosts=('A_NETD' 'S_NETD' 'A_HPC' 'S_HPC' 'A_HAW' 'S_HAW')
+# switches=('S1' 'S1' 'S2' 'S2' 'S3' 'S3')
+# tunnels=('MUNI' 'MILA')
 
 # Variables for this script
 isDoBackup=false
@@ -59,9 +61,9 @@ restore_configs() {
     echo "Restoring config on AS: ${as}"
     docker cp ./configs-as-${as}.tar.gz ${as}_ssh:/root/configs-as-${as}.tar.gz
 
-    docker exec -iw /root ${as}_ssh bash -c "./restore_configs.sh configs-as-${as}.tar.gz all" << EOF
-Y
-EOF
+    #docker exec -iw /root ${as}_ssh bash -c "./restore_configs.sh configs-as-${as}.tar.gz all" << EOF
+#Y
+#EOF
 
     # Extract the config file
     cd $WORKDIR../students_config/; rm -rf configs_*; tar -xf configs-as-${as}.tar.gz
@@ -79,7 +81,7 @@ EOF
       docker cp ${configs_folder_name}${rc}/router.conf ${container_name}:/root/frr.conf
 
       # Remove the building configuration and current configuration text
-      docker exec -itw /root ${container_name} bash -c 'sed '1,3d' /root/frr.conf > /root/frr-removed-header.conf'
+      docker exec -itw /root ${container_name} bash -c 'sed '"'"'1,3d'"'"' /root/frr.conf > /root/frr-removed-header.conf'
 
       docker exec -itw /root ${container_name} bash -c '/usr/lib/frr/frr-reload.py --reload /root/frr-removed-header.conf'
       sleep 2
@@ -162,13 +164,42 @@ EOF
       # Get default route (IPv4 only?)
       default_route=$(cat ${configs_folder_name}${hostname}/host.route | grep -w default | awk '{print $3}')
       echo "Backuped $container_name Default Route: ${default_route}"
+      # Get default route IPv6
+      default_route_v6=$(cat ${configs_folder_name}${hostname}/host.route6 | grep -w default | awk '{print $3}')
+      echo "Backuped $container_name Default IPv6 Route: ${default_route_v6}"
 
       # Adding the IPv4 and IPv6 address
       docker exec -itw /root ${container_name} ip address add ${ipv4} dev ${as}-S${i} &> /dev/null
       docker exec -itw /root ${container_name} ip address add ${ipv6} dev ${as}-S${i} &> /dev/null
       docker exec -itw /root ${container_name} ip route add default via ${default_route} &> /dev/null
+      docker exec -itw /root ${container_name} ip route add default via ${default_route_v6} &> /dev/null
       # done
     done
+
+      # Restore ipv6 tunnel
+    for tunnel in ${tunnels[@]}; do
+        echo "Restoring Tunnel in $tunnel configuration"
+	container_name=${as}_${tunnel}router
+
+	# Get tunnel config
+	tunnel_name=$(cat ${configs_folder_name}${tunnel}/router.tunnels | grep -v sit0 | awk '{sub(":", "", $1); print $1}')
+	tunnel_remote=$(cat ${configs_folder_name}${tunnel}/router.tunnels | grep -v sit0 | awk '{print $4}')
+	tunnel_local=$(cat ${configs_folder_name}${tunnel}/router.tunnels | grep -v sit0 | awk '{print $6}')
+
+	add_tunnel_cmd=$(echo "ip tunnel add $tunnel_name mode sit remote $tunnel_remote local $tunnel_local ttl 255")
+	docker exec -itw /root ${container_name} ${add_tunnel_cmd}
+	echo "$add_tunnel_cmd"
+
+	set_tunnel_cmd=$(echo "ip link set $tunnel_name up")
+	docker exec -itw /root ${container_name} ${set_tunnel_cmd}
+	echo "$set_tunnel_cmd"
+
+	subnet=$(jq -c .[] ${configs_folder_name}${tunnel}/router.rib6.json | grep kernel.*${tunnel_name} | jq -c .[] | jq -cr .prefix)
+	echo "$subnet"
+	docker exec -itw /root ${container_name} ip route add $subnet dev $tunnel_name
+
+    done
+
   done
 }
 
