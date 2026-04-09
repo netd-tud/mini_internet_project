@@ -30,7 +30,7 @@ ovs-vsctl emer-reset
 
 # Delete virtual interfaces except for known system interfaces.
 for n in $(ip -o link show | awk -F': ' '{print $2}'); do
-    if [[ ! $n =~ ^(en|lo|eth|docker0|virbr0|bond0|br-289995bc19aa|vetha775d42@if15) ]]; then
+    if [[ ! $n =~ ^(en|lo|eth|docker0|virbr0|bond0|br-289995bc19aa|veth878b806@if11983) ]]; then
         ip link delete $(echo $n | cut -d'@' -f 1)
     fi
 done
