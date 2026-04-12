@@ -6,14 +6,14 @@
 
 # The prefix for the dockerhub images. Leave empty for local images.
 # If it isn't empty, it must end with a slash.
-DOCKERHUB_PREFIX="miniinterneteth/"
+DOCKERHUB_PREFIX=""
 # DOCKERHUB_PREFIX="miniinterneteth/"
 
 
 # This URL will be suggested as the default location for students
 # to download their configs. It should be publicly accessible via ssh at port
 # 2000 + X, where X is each AS number.
-SSH_URL="westvleteren.ethz.ch"
+SSH_URL="internet.netd.cs.tu-dresden.de"
 
 # =============================================================================
 # WEBSERVER
@@ -23,8 +23,9 @@ SSH_URL="westvleteren.ethz.ch"
 # You need to specify the hostname of the server and an email for
 # LetsEncrypt to be enabled.
 # UPDATE THOSE VARIABLES. WEBSERVER_HOSTNAME -> hostname of the server and EMAIL -> empty string (for http)
-WEBSERVER_HOSTNAME="localhost"
-WEBSERVER_ACME_MAIL="nsg@ethz.ch"
+WEBSERVER_HOSTNAME="internet.netd.cs.tu-dresden.de"
+WEBSERVER_ACME_MAIL="rechnernetze@tu-dresden.de"
+WEBSERVER_ACME_CASERVER="https://acme.pki.cert.tu-dresden.de/"
 # Hostname and ports for the webserver and krill on the host.
 # (must be publicly available)
 # you can change http and https ports, but letsencrypt won't work, so its not recommended.
@@ -33,11 +34,11 @@ WEBSERVER_PORT_HTTPS="443"
 # Use the one you want, make sure to make it reachable from outside.
 WEBSERVER_PORT_KRILL="3000"
 # Put your timezone here.
-WEBSERVER_TZ="Europe/Zurich"
+WEBSERVER_TZ="Europe/Berlin"
 # If you want to use the files from the docker image, set this variable to "":
-# WEBSERVER_SOURCEFILES=""
+WEBSERVER_SOURCEFILES=""
 # If you want your own webserver files instead add the filepath here (relative to the platform/config folder)
-WEBSERVER_SOURCEFILES="/webserver"
+# WEBSERVER_SOURCEFILES="/webserver"
 
 # This year we are adding a chatbot to help the students with the project
 # By enabling this a new tab will be added which is used to connect to the chatbot webserver
@@ -65,7 +66,7 @@ DEFAULT_BUFFER=50ms
 # at the start of every ping cycle.
 
 # Interval for pings in seconds.
-MATRIX_FREQUENCY=120
+MATRIX_FREQUENCY=300
 # Number of ping processes to run concurrently.
 MATRIX_CONCURRENT_PINGS=500
 # Flags to pass to the ping command.

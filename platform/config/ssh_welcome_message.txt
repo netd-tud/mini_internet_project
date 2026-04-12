@@ -1,6 +1,6 @@
 +------------------------------------------------------+
 |                                                      |
-|           Mini-Internet @ Rechnernetze 2025          |
+|           Mini-Internet @ Rechnernetze 2026          |
 |               Build your mini-Internet!              |
 |                                                      |
 |   From here, you can access your virtual devices     |
@@ -8,8 +8,8 @@
 |                                                      |
 |       ./goto.sh drs router                           |
 |       ./goto.sh drs host                             |
-|       ./goto.sh l2s  s1                              |
-|       ./goto.sh l2s  a_admin                         |
+|       ./goto.sh l2e s1                               |
+|       ./goto.sh l2e a_netd                           |
 |                                                      |
 |   Or you can access the public measurement service:  |
 |                                                      |
