@@ -13,6 +13,7 @@ for image in "${images[@]}"; do
     docker build --tag="d_${image}" "docker_images/${image}/"
 done
 
+exit 0
 docker login
 
 # If you want to use your custom docker containers and upload them into
