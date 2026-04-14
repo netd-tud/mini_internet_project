@@ -83,7 +83,7 @@ FIRST_IXP = 140
 # --------------------------------------------------------------
 
 skip_groups = [
-    127,
+    99, 127, 157, 158, 179, 180, 198
 ]  # 127 is a reserved IP range, cannot use as AS prefix.
 do_not_hijack = [
     1,
