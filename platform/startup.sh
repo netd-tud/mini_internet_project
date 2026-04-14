@@ -177,7 +177,7 @@ sleep 60
 
 echo "rpki_setup.sh $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
 echo "rpki_setup.sh: "
-time ./setup/rpki_setup.sh "${DIRECTORY}"
+# time ./setup/rpki_setup.sh "${DIRECTORY}"
 
 echo ""
 echo ""
@@ -215,7 +215,7 @@ echo ""
 
 echo "Applying hijacks: "
 echo "hijacks $(($(date +%s%N)/1000000))" >> "${DIRECTORY}"/log.txt
-time ./setup/hijack_config.py "${DIRECTORY}"
+# time ./setup/hijack_config.py "${DIRECTORY}"
 
 echo "$(date +%Y-%m-%d_%H-%M-%S)"
 
