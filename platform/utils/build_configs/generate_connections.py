@@ -58,7 +58,7 @@ import math
 # If true, stub ASes in the same area try to hijack each others prefixes. Also,
 # add two TA-configured ASes between the stubs and student ASes so that no
 # student AS is directly connected to a malicious AS.
-ENABLE_STUB_HIJACKS = True
+ENABLE_STUB_HIJACKS = False
 
 # Set true to test the topology.
 AUTOCONF_EVERYTHING = False
