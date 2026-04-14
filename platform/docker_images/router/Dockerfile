@@ -26,7 +26,7 @@ RUN install -m 755 -o frr -g frr -d /var/log/frr \
 
 EXPOSE 22
 
-ENV VPN_OVSERVER_SLEEP=30
+ENV VPN_OBSERVER_SLEEP=30
 
 COPY supervisord.conf /etc/supervisor/conf.d/processes.conf
 COPY looking_glass.sh /usr/local/bin/looking_glass
