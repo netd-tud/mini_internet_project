@@ -5,7 +5,7 @@ FROM alpine:3.19
 RUN apk add --no-cache tini bash bash-completion util-linux coreutils \
     binutils findutils grep vim nano tzdata \
     iputils net-tools bind-tools iperf3 tcptraceroute tcpdump nmap nmap-nping iputils-arping \
-    tmux screen htop mtr \
+    tmux screen htop mtr python3 \
     && echo "export PS1=\"\[\033[38;5;2m\]\u@\h \[\033[38;5;75m\]\w\e[m> \"" > /root/.bashrc \
     && sed -i -E "s/bin\/a?sh/bin\/bash/" /etc/passwd
 
