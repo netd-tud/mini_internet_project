@@ -91,7 +91,7 @@ restore_configs() {
 
     # Extract the config file into the temporary directory
     tmp_dir=$(mktemp -d)
-    tar -xf "config-as-${as}.tar.gz" -C "$tmp_dir"
+    tar -xf "configs-as-${as}.tar.gz" -C "$tmp_dir"
     configs_folder_name=$(ls -d "$tmp_dir"/*/ | grep configs)
 
     restore_routers "$as" "$configs_folder_name"
