@@ -56,6 +56,20 @@ def parse_args():
         help="Seed for reproducible assignments.",
     )
     parser.add_argument(
+        "--container-count",
+        type=int,
+        default=None,
+        help=(
+            "Allocate CPU sets for this many containers instead of reading "
+            "existing Docker container names."
+        ),
+    )
+    parser.add_argument(
+        "--cpuset-list",
+        action="store_true",
+        help="Print only ordered cpuset strings, one per container.",
+    )
+    parser.add_argument(
         "--apply",
         action="store_false",
         dest="dry_run",
@@ -213,17 +227,43 @@ def main():
         raise ValueError("--cpus-per-container must be greater than 0")
     if args.candidates_per_container <= 0:
         raise ValueError("--candidates-per-container must be greater than 0")
+    if args.container_count is not None and args.container_count < 0:
+        raise ValueError("--container-count must be greater than or equal to 0")
+    if args.cpus_per_container > args.total_cpus:
+        raise ValueError("--cpus-per-container cannot exceed --total-cpus")
+    if args.container_count is not None and not args.dry_run:
+        raise ValueError("--apply cannot be used with --container-count")
 
     if args.random_seed is not None:
         random.seed(args.random_seed)
 
-    containers = docker_container_names()
+    if args.container_count is None:
+        containers = docker_container_names()
+    else:
+        containers = list(range(args.container_count))
 
     if not containers:
+        if args.cpuset_list:
+            return 0
         print("No matching containers found.")
         return 1
 
-    print(f"Found {len(containers)} matching containers.")
+    assignments = allocate(
+        containers,
+        args.total_cpus,
+        args.cpus_per_container,
+        args.candidates_per_container,
+    )
+
+    if args.cpuset_list:
+        for container in containers:
+            print(cpuset_string(assignments[container]))
+        return 0
+
+    if args.container_count is None:
+        print(f"Found {len(containers)} matching containers.")
+    else:
+        print(f"Allocating CPU sets for {len(containers)} containers.")
     print(
         f"Assigning {args.cpus_per_container} CPUs per container "
         f"across {args.total_cpus} logical CPUs."
@@ -237,13 +277,6 @@ def main():
     print(f"Expected per-core use: {base} or {base + 1} containers per CPU")
     print(f"Dry run: {args.dry_run}")
     print()
-
-    assignments = allocate(
-        containers,
-        args.total_cpus,
-        args.cpus_per_container,
-        args.candidates_per_container,
-    )
 
     cpu_use = [0] * args.total_cpus
 

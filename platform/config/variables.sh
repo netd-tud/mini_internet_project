@@ -76,6 +76,21 @@ MATRIX_PING_FLAGS="-c 3 -i 0.01"  # Three pings, 10ms interval.
 MATRIX_PAUSE_AFTER_START=false
 
 # =============================================================================
+# Switch CPU placement
+# =============================================================================
+
+# Pin L2 switch and IXP containers to distributed CPU sets during container
+# creation. This is useful on large hosts where the Open vSwitch processes
+# should be spread across many logical CPUs.
+SWITCH_CPUSET_ENABLED=false
+SWITCH_CPUSET_TOTAL_CPUS=256
+SWITCH_CPUSET_CPUS_PER_CONTAINER=6
+SWITCH_CPUSET_CANDIDATES_PER_CONTAINER=3000
+# Leave empty for randomized assignments, or set an integer for reproducible
+# CPU-set allocation.
+SWITCH_CPUSET_RANDOM_SEED=""
+
+# =============================================================================
 # History collector.
 # =============================================================================
 

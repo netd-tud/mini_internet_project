@@ -27,6 +27,52 @@ container_list_file="${DIRECTORY}/groups/docker_containers.txt"
 >$routinator_container_list_file
 >$container_list_file
 
+declare -a SWITCH_CPUSETS
+declare -A GROUP_SWITCH_CPUSET_OFFSET
+
+if [[ "${SWITCH_CPUSET_ENABLED}" == "true" ]]; then
+    switch_cpuset_container_count=0
+
+    for ((k = 0; k < group_numbers; k++)); do
+        group_k=(${groups[$k]})
+        group_number="${group_k[0]}"
+        group_as="${group_k[1]}"
+        group_layer2_switches="${group_k[5]}"
+
+        GROUP_SWITCH_CPUSET_OFFSET["${group_number}"]=${switch_cpuset_container_count}
+
+        if [[ "${group_as}" == "IXP" ]]; then
+            switch_cpuset_container_count=$((switch_cpuset_container_count + 1))
+        else
+            readarray l2_switches < "${DIRECTORY}"/config/$group_layer2_switches
+            switch_cpuset_container_count=$((switch_cpuset_container_count + ${#l2_switches[@]}))
+        fi
+    done
+
+    if [[ ${switch_cpuset_container_count} -gt 0 ]]; then
+        switch_cpuset_command=(
+            "${DIRECTORY}/utils/miscellaneous/distribute-switches.py"
+            --container-count "${switch_cpuset_container_count}"
+            --cpuset-list
+            --total-cpus "${SWITCH_CPUSET_TOTAL_CPUS}"
+            --cpus-per-container "${SWITCH_CPUSET_CPUS_PER_CONTAINER}"
+            --candidates-per-container "${SWITCH_CPUSET_CANDIDATES_PER_CONTAINER}"
+        )
+
+        if [[ -n "${SWITCH_CPUSET_RANDOM_SEED}" ]]; then
+            switch_cpuset_command+=(--random-seed "${SWITCH_CPUSET_RANDOM_SEED}")
+        fi
+
+        switch_cpuset_output="$("${switch_cpuset_command[@]}")"
+        readarray -t SWITCH_CPUSETS <<< "${switch_cpuset_output}"
+
+        if [[ ${#SWITCH_CPUSETS[@]} -ne ${switch_cpuset_container_count} ]]; then
+            echo "Expected ${switch_cpuset_container_count} switch CPU sets, got ${#SWITCH_CPUSETS[@]}" >&2
+            exit 1
+        fi
+    fi
+fi
+
 # create a docker network to connect all ssh proxy containers
 ssh_to_grp_bname="ssh_bridge"
 subnet_ssh_to_grp="$(subnet_ext_sshContainer -1 "docker")"
@@ -106,9 +152,16 @@ for ((k = 0; k < group_numbers; k++)); do
                 sname="${switch_l[1]}"
 
                 subnet_ssh_switch="$(subnet_sshContainer_groupContainer "${group_number}" -1 "${l}" "switch")"
+                switch_cpuset_args=()
+
+                if [[ "${SWITCH_CPUSET_ENABLED}" == "true" ]]; then
+                    switch_cpuset_index=$((GROUP_SWITCH_CPUSET_OFFSET["${group_number}"] + l))
+                    switch_cpuset_args=(--cpuset-cpus "${SWITCH_CPUSETS[$switch_cpuset_index]}")
+                fi
 
                 docker run -itd --dns="${subnet_dns%/*}" --cap-add=NET_ADMIN \
                     --cpus=2 --pids-limit 1024 --hostname "${sname}" \
+                    "${switch_cpuset_args[@]}" \
                     --name=${group_number}_L2_${l2name}_${sname} \
                     --cap-add=ALL \
                     --cap-drop=SYS_RESOURCE \
@@ -312,8 +365,16 @@ for ((k = 0; k < group_numbers; k++)); do
         elif [ "${group_as}" = "IXP" ]; then
 
             location="${DIRECTORY}"/groups/g"${group_number}"
+            ixp_cpuset_args=()
+
+            if [[ "${SWITCH_CPUSET_ENABLED}" == "true" ]]; then
+                ixp_cpuset_index=${GROUP_SWITCH_CPUSET_OFFSET["${group_number}"]}
+                ixp_cpuset_args=(--cpuset-cpus "${SWITCH_CPUSETS[$ixp_cpuset_index]}")
+            fi
+
             docker run -itd --net='none' --name="${group_number}""_IXP" \
                 --pids-limit 200 --hostname "${group_number}""_IXP" \
+                "${ixp_cpuset_args[@]}" \
                 -v "${location}"/daemons:/etc/frr/daemons \
                 --privileged \
                 --sysctl net.ipv4.ip_forward=1 \
