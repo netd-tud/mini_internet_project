@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='hilbert/hilbert.css') }}">
+{% endblock %}
+
+{% block body %}
+<div id="hilbert-root">
+    <div class="max-w-4xl mx-auto p-6">
+        <noscript>This page requires JavaScript to render the Hilbert curve.</noscript>
+    </div>
+</div>
+<script type="module" src="{{ url_for('static', filename='hilbert/hilbert.js') }}"></script>
+{% endblock %}

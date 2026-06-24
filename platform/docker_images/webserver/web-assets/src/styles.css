@@ -1,0 +1,235 @@
+.hilbert-page {
+  max-width: 88rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  color: #1f2937;
+}
+
+.hilbert-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.hilbert-header h1 {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  text-decoration: underline;
+  text-decoration-color: #ff7e79;
+  text-decoration-thickness: 0.25rem;
+  text-underline-offset: 0.125em;
+}
+
+.hilbert-controls {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 13rem;
+}
+
+.hilbert-controls label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #525252;
+}
+
+.hilbert-controls input {
+  width: 100%;
+  border: 1px solid #a3a3a3;
+  border-radius: 0.375rem;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+}
+
+.hilbert-controls input:focus {
+  border-color: #404040;
+  outline: 2px solid #d4d4d4;
+  outline-offset: 2px;
+}
+
+.hilbert-message {
+  margin: 0 0 1rem;
+  color: #525252;
+}
+
+.hilbert-error {
+  color: #b91c1c;
+}
+
+.hilbert-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hilbert-stat {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  border: 1px solid #d4d4d4;
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background: #fafafa;
+}
+
+.hilbert-swatch {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid rgb(0 0 0 / 18%);
+}
+
+.hilbert-stat-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #404040;
+}
+
+.hilbert-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: 1rem;
+  align-items: start;
+}
+
+.hilbert-plot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: min(72vh, 48rem);
+  min-height: 32rem;
+  border: 1px solid #d4d4d4;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.hilbert-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.hilbert-frame > div {
+  width: 100%;
+  height: 100%;
+}
+
+.hilbert-plot:focus {
+  outline: 2px solid #737373;
+  outline-offset: 2px;
+}
+
+.hilbert-details {
+  display: grid;
+  gap: 0.85rem;
+  border-left: 4px solid #d4d4d4;
+  padding-left: 1rem;
+  color: #404040;
+}
+
+.hilbert-details div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hilbert-details span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #737373;
+}
+
+.hilbert-details strong {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.hilbert-details p {
+  margin: 0;
+  color: #525252;
+}
+
+.hilbert-cell {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0.08rem;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.hilbert-cell-asn,
+.hilbert-cell-prefix {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.hilbert-cell-asn {
+  font-size: 12cqw;
+}
+
+.hilbert-cell-prefix {
+  font-size: 9cqw;
+  font-weight: 600;
+}
+
+.hilbert-cell-empty {
+  width: 100%;
+  height: 100%;
+}
+
+.net {
+  container-type: inline-size;
+  border-color: rgb(255 255 255 / 75%);
+}
+
+@media (max-width: 900px) {
+  .hilbert-header,
+  .hilbert-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .hilbert-header {
+    display: grid;
+    align-items: stretch;
+  }
+
+  .hilbert-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hilbert-plot {
+    height: 70vw;
+    min-height: 24rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hilbert-page {
+    padding: 1rem;
+  }
+
+  .hilbert-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .hilbert-summary {
+    grid-template-columns: 1fr;
+  }
+}
