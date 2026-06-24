@@ -22,6 +22,7 @@ import {
 } from "./prefixes";
 
 const TOP_PREFIX = "0.0.0.0/0";
+const ASN_QUERY_PARAM = "asn";
 const RESERVED_ASNS = new Set(["0", "127"]);
 type AggregateReachability = {
   connectivity: number | null;
@@ -39,11 +40,26 @@ const baseRender: RenderFunction = (_prefix, _long, _netmask, config) => {
   config.style.cursor = "pointer";
 };
 
+function getAsnFromLocation(): string {
+  return normalizeAsn(new URLSearchParams(window.location.search).get(ASN_QUERY_PARAM) ?? "");
+}
+
+function setAsnInLocation(asn: string): void {
+  const url = new URL(window.location.href);
+  if (asn) {
+    url.searchParams.set(ASN_QUERY_PARAM, asn);
+  } else {
+    url.searchParams.delete(ASN_QUERY_PARAM);
+  }
+
+  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
 function App() {
   const [matrix, setMatrix] = useState<MatrixRaw | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [asnInput, setAsnInput] = useState("");
+  const [asnInput, setAsnInput] = useState(() => getAsnFromLocation());
   const initializedAsnInput = useRef(false);
 
   const [
@@ -84,6 +100,19 @@ function App() {
 
     return () => {
       cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      initializedAsnInput.current = true;
+      setAsnInput(getAsnFromLocation());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
     };
   }, []);
 
@@ -139,11 +168,19 @@ function App() {
   );
 
   useEffect(() => {
-    if (!initializedAsnInput.current && sourceAsns.length > 0) {
-      initializedAsnInput.current = true;
+    if (initializedAsnInput.current || sourceAsns.length === 0) {
+      return;
+    }
+
+    initializedAsnInput.current = true;
+    if (!asnInput) {
       setAsnInput(sourceAsns[0]);
     }
-  }, [sourceAsns]);
+  }, [asnInput, sourceAsns]);
+
+  useEffect(() => {
+    setAsnInLocation(selectedAsn);
+  }, [selectedAsn]);
 
   const renderFunctions = useMemo<RenderFunction[]>(() => [
     (prefix, long, netmask, config) => {
@@ -277,7 +314,7 @@ function App() {
   return (
     <main className="hilbert-page">
       <section className="hilbert-header">
-        <h1>reachability hilbert curve</h1>
+        <h1>as-view</h1>
         <div className="hilbert-actions">
           <div className="hilbert-controls">
             <label htmlFor="asn-input">AS number</label>
@@ -285,6 +322,7 @@ function App() {
               id="asn-input"
               list="asn-options"
               inputMode="numeric"
+              autoComplete="off"
               value={asnInput}
               onChange={(event) => setAsnInput(event.target.value)}
               placeholder={sourceAsns.length ? sourceAsns[0] : "AS"}

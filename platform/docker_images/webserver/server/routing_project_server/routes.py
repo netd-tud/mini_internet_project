@@ -57,6 +57,11 @@ def connectivity_matrix():
         valid=valid, invalid=invalid, failure=failure,
         last_updated=updated, update_frequency=frequency,
     )
+
+@main_bp.route("/as-view")
+def hilbert_curve():
+    """Show the connectivity matrix data as a Hilbert curve."""
+    return render_template("hilbert.html")
     
 @main_bp.route("/looking-glass")
 @main_bp.route("/looking-glass/<int:group>")
