@@ -57,7 +57,7 @@ while IFS= read -r number || [ -n "${number}" ]; do
     fi
 
     printf '%s\n%s\n' "${password}" "${password}" | docker exec -i "${container}" passwd root > /dev/null
-    docker exec -i "${container}" rm /root/.ssh/authorized_keys
-    "${FOLLOW_UP_SCRIPT}" --no-rpki "${number}"
+    docker exec "${container}" rm /root/.ssh/authorized_keys
+    "${FOLLOW_UP_SCRIPT}" --no-rpki "${number}" < /dev/tty
 
 done < "${NUMBERS_FILE}"
