@@ -127,6 +127,10 @@ function App() {
 
     return aggregates;
   }, [hilbertAsns, internalPrefixes, leafDepth, matrix, selectedAsn, selectedRowExists]);
+  const countedSplitPrefixes = useMemo(
+    () => internalPrefixes.filter((prefix) => (aggregateByPrefix.get(prefix)?.total ?? 0) > 0),
+    [aggregateByPrefix, internalPrefixes]
+  );
   const leafPrefixSet = useMemo(() => new Set(leafPrefixes), [leafPrefixes]);
 
   const statusCounts = useMemo(
@@ -212,7 +216,7 @@ function App() {
 
     splitFrame = window.requestAnimationFrame(() => {
       clearAllPrefixes();
-      setPrefixSplit(internalPrefixes, true);
+      setPrefixSplit(countedSplitPrefixes, true);
 
       resetFrame = window.requestAnimationFrame(() => {
         hilbertStore.getState().resetZoom();
@@ -230,10 +234,10 @@ function App() {
     };
   }, [
     clearAllPrefixes,
+    countedSplitPrefixes,
     error,
     hilbertAsns.length,
     hilbertStore,
-    internalPrefixes,
     loading,
     renderFunctions,
     setPrefixSplit
@@ -274,21 +278,30 @@ function App() {
     <main className="hilbert-page">
       <section className="hilbert-header">
         <h1>reachability hilbert curve</h1>
-        <div className="hilbert-controls">
-          <label htmlFor="asn-input">AS number</label>
-          <input
-            id="asn-input"
-            list="asn-options"
-            inputMode="numeric"
-            value={asnInput}
-            onChange={(event) => setAsnInput(event.target.value)}
-            placeholder={sourceAsns.length ? sourceAsns[0] : "AS"}
-          />
-          <datalist id="asn-options">
-            {sourceAsns.map((asn) => (
-              <option value={asn} key={asn} />
-            ))}
-          </datalist>
+        <div className="hilbert-actions">
+          <div className="hilbert-controls">
+            <label htmlFor="asn-input">AS number</label>
+            <input
+              id="asn-input"
+              list="asn-options"
+              inputMode="numeric"
+              value={asnInput}
+              onChange={(event) => setAsnInput(event.target.value)}
+              placeholder={sourceAsns.length ? sourceAsns[0] : "AS"}
+            />
+            <datalist id="asn-options">
+              {sourceAsns.map((asn) => (
+                <option value={asn} key={asn} />
+              ))}
+            </datalist>
+          </div>
+          <button
+            type="button"
+            className="hilbert-reset-button"
+            onClick={() => hilbertStore.getState().resetZoom()}
+          >
+            Reset zoom
+          </button>
         </div>
       </section>
 
