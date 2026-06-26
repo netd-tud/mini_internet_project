@@ -164,9 +164,9 @@ echo "Configuration applied and saved successfully to $CONTAINER."
     filename = f"update_{container}_{interface}.sh"
     
     # Skript schreiben
-    with open(f"{path}/{filename}", "w") as f:
+    with open(f"{path}/{filename}", "w", newline='\n') as f:
         f.write(bash_template)
-    
+		
     print(f"Erfolg: Skript erstellt -> {filename}")
 
 
@@ -190,20 +190,22 @@ if __name__ == "__main__":
 			generate_frr_script(path, container1_name, interface1_name, f"{group}.0.{new_subnet}.2/24", f"{group}.0.{new_subnet}.0/24")
 		print(get_network_ascii(NETWORK))
 		# create script to run each generated script in the group folder one line per script
-		with open(f"{path}/run_all_group{group}.sh", "w") as f:
+		with open(f"{path}/run_all_group{group}.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n\n")
 			f.write(f": <<'COMMENT'\n")
 			f.write(get_network_ascii(NETWORK))
 			f.write(f"COMMENT\n\n")
+			f.write("SCRIPT_DIR=$(dirname \"$0\")\n")
 			for link in NETWORK:
 				container0_name = f"{group}_{link.get_routers()[0].get_name()}router"
 				interface0_name = link.get_interfaces()[0].get_name()
 				container1_name = f"{group}_{link.get_routers()[1].get_name()}router"
 				interface1_name = link.get_interfaces()[1].get_name()
-				f.write(f"bash update_{container0_name}_{interface0_name}.sh\n")
-				f.write(f"bash update_{container1_name}_{interface1_name}.sh\n")
+				f.write(f"bash $SCRIPT_DIR/update_{container0_name}_{interface0_name}.sh\n")
+				f.write(f"bash $SCRIPT_DIR/update_{container1_name}_{interface1_name}.sh\n")
 		# create script to run each group script
-		with open(f"shuffle_subnets/run_all_groups.sh", "w") as f:
+		with open(f"shuffle_subnets/run_all_groups.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n")
+			f.write("SCRIPT_DIR=$(dirname \"$0\")\n")
 			for group in GROUPS:
-				f.write(f"bash group_{group}/run_all_group{group}.sh\n")
+				f.write(f"bash $SCRIPT_DIR/group_{group}/run_all_group{group}.sh\n")
