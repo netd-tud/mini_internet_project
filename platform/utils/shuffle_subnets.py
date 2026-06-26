@@ -170,6 +170,48 @@ echo "Configuration applied and saved successfully to $CONTAINER."
     print(f"Erfolg: Skript erstellt -> {filename}")
 
 
+def get_all_unique_routers(network):
+	# Get all unique routers in the network
+	routers = set()
+	for link in network:
+		routers.add(link.get_routers()[0].get_name())
+		routers.add(link.get_routers()[1].get_name())
+	return list(routers)
+
+
+def get_interfaces_of_router(router_name):
+	# Get all interfaces of a router
+	interfaces = []
+	for link in NETWORK:
+		if link.get_routers()[0].get_name() == router_name:
+			interfaces.append(link.get_interfaces()[0])
+		elif link.get_routers()[1].get_name() == router_name:
+			interfaces.append(link.get_interfaces()[1])
+	return interfaces
+
+
+def get_23_prefix_interfaces(network):
+	# Get all interfaces per router where two interfaces ips could be in the same /23 prefix
+	p23_interfaces = {}
+	for router in get_all_unique_routers(network):
+		interfaces = get_interfaces_of_router(router)
+		if len(interfaces) < 2:
+			continue
+		for i in range(len(interfaces)):
+			for j in range(i + 1, len(interfaces)):
+				ip1 = interfaces[i].get_ip().split('/')[0]
+				ip2 = interfaces[j].get_ip().split('/')[0]
+				prefix1 = int(ip1.split('.')[2])
+				prefix2 = int(ip2.split('.')[2])
+				if prefix1 % 2 == 0 and prefix2 - prefix1 == 1:
+					p23_interfaces.setdefault(router, []).append((interfaces[i], interfaces[j]))
+				if prefix2 % 2 == 0 and prefix1 - prefix2 == 1:
+					p23_interfaces.setdefault(router, []).append((interfaces[j], interfaces[i]))
+	return p23_interfaces
+		
+	
+
+
 # main
 if __name__ == "__main__":
 	for group in GROUPS:
@@ -189,6 +231,10 @@ if __name__ == "__main__":
 			generate_frr_script(path, container0_name, interface0_name, f"{group}.0.{new_subnet}.1/24", f"{group}.0.{new_subnet}.0/24")
 			generate_frr_script(path, container1_name, interface1_name, f"{group}.0.{new_subnet}.2/24", f"{group}.0.{new_subnet}.0/24")
 		print(get_network_ascii(NETWORK))
+		for router, interface_pairs in get_23_prefix_interfaces(NETWORK).items():
+			print(f"Router {router} has interfaces in the same /23 prefix:")
+			for pair in interface_pairs:
+				print(f"  - {pair[0].get_name()} ({pair[0].get_ip()}) and {pair[1].get_name()} ({pair[1].get_ip()})")
 		# create script to run each generated script in the group folder one line per script
 		with open(f"{path}/run_all_group{group}.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n\n")
@@ -203,6 +249,8 @@ if __name__ == "__main__":
 				interface1_name = link.get_interfaces()[1].get_name()
 				f.write(f"bash $SCRIPT_DIR/update_{container0_name}_{interface0_name}.sh\n")
 				f.write(f"bash $SCRIPT_DIR/update_{container1_name}_{interface1_name}.sh\n")
+			# TODO: Add netmask bug
+			# TODO: Add routing loop bug
 		# create script to run each group script
 		with open(f"shuffle_subnets/run_all_groups.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n")
