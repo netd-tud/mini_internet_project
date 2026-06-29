@@ -1,9 +1,25 @@
 
 import os
+import random
 
 
-GROUPS = [31]
+GROUPS = [
+	# 3,
+	# 4,
+	# 5,
+	# 6,
+	# 23,
+	# 24,
+	# 25,
+	# 26,
+	31,
+	32,
+	# 33,
+	# 34
+	]
 NEW_SUBNETS = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+ADD_NETMASK_BUG = True
+ADD_ROUTING_LOOP_BUG = True
 
 
 class Router:
@@ -83,6 +99,17 @@ def get_interface_ip(src_router_str, dst_router_str):
 def set_interface_ip(src_router_str, dst_router_str, new_ip):
 	for link in NETWORK:
 		link.set_interface_ip(src_router_str, dst_router_str, new_ip)
+
+
+def set_interface_ip_by_name(router_name, interface_name, new_ip):
+	for link in NETWORK:
+		if link.get_routers()[0].get_name() == router_name and link.get_interfaces()[0].get_name() == interface_name:
+			link.get_interfaces()[0].set_ip(new_ip)
+			return
+		elif link.get_routers()[1].get_name() == router_name and link.get_interfaces()[1].get_name() == interface_name:
+			link.get_interfaces()[1].set_ip(new_ip)
+			return
+	raise Exception(f"Interface {interface_name} not found on router {router_name}.")
 
 
 def take_random_subnet(subnet_list):
@@ -167,7 +194,7 @@ echo "Configuration applied and saved successfully to $CONTAINER."
     with open(f"{path}/{filename}", "w", newline='\n') as f:
         f.write(bash_template)
 		
-    print(f"Erfolg: Skript erstellt -> {filename}")
+    # print(f"Erfolg: Skript erstellt -> {filename}")
 
 
 def get_all_unique_routers(network):
@@ -193,8 +220,8 @@ def get_interfaces_of_router(router_name):
 def get_23_prefix_interfaces(network):
 	# Get all interfaces per router where two interfaces ips could be in the same /23 prefix
 	p23_interfaces = {}
-	for router in get_all_unique_routers(network):
-		interfaces = get_interfaces_of_router(router)
+	for router_name in get_all_unique_routers(network):
+		interfaces = get_interfaces_of_router(router_name)
 		if len(interfaces) < 2:
 			continue
 		for i in range(len(interfaces)):
@@ -204,12 +231,20 @@ def get_23_prefix_interfaces(network):
 				prefix1 = int(ip1.split('.')[2])
 				prefix2 = int(ip2.split('.')[2])
 				if prefix1 % 2 == 0 and prefix2 - prefix1 == 1:
-					p23_interfaces.setdefault(router, []).append((interfaces[i], interfaces[j]))
+					p23_interfaces.setdefault(router_name, []).append((interfaces[i], interfaces[j]))
 				if prefix2 % 2 == 0 and prefix1 - prefix2 == 1:
-					p23_interfaces.setdefault(router, []).append((interfaces[j], interfaces[i]))
+					p23_interfaces.setdefault(router_name, []).append((interfaces[j], interfaces[i]))
 	return p23_interfaces
 		
 	
+def get_random_23_prefix_interface_pair(network):
+	# Get a random pair of interfaces that could be in the same /23 prefix
+	p23_interfaces = get_23_prefix_interfaces(network)
+	if not p23_interfaces:
+		return None
+	router_name = random.choice(list(p23_interfaces.keys()))
+	interface_pair = random.choice(p23_interfaces[router_name])
+	return router_name, interface_pair
 
 
 # main
@@ -220,26 +255,57 @@ if __name__ == "__main__":
 		if not os.path.exists(path):
 			os.makedirs(path)
 		subnet_list = NEW_SUBNETS.copy()
+		# assign new subnets to each link in the network
 		for link in NETWORK:
 			new_subnet = take_random_subnet(subnet_list)
 			set_interface_ip(link.get_routers()[0].get_name(), link.get_routers()[1].get_name(), f"{group}.0.{new_subnet}.1/24")
 			set_interface_ip(link.get_routers()[1].get_name(), link.get_routers()[0].get_name(), f"{group}.0.{new_subnet}.2/24")
+		print(get_network_ascii(NETWORK))
+		# add netmask bug if enabled
+		netmask_bug_str = ""
+		if ADD_NETMASK_BUG:
+			netmask_bug_str += "Adds netmask bug:\n"
+			for router_name, interface_pairs in get_23_prefix_interfaces(NETWORK).items():
+				print(f"Router {router_name} has interfaces in the same /23 prefix:")
+				for pair in interface_pairs:
+					print(f"  - {pair[0].get_name()} ({pair[0].get_ip()}) and {pair[1].get_name()} ({pair[1].get_ip()})")
+			print("\n")
+			router_name, interface_pair = get_random_23_prefix_interface_pair(NETWORK)
+			if router_name and router_name != "PRG":
+				current_ip = interface_pair[0].get_ip()
+				new_ip = current_ip.split('/')[0] + "/23"
+				set_interface_ip_by_name(router_name, interface_pair[0].get_name(), new_ip)
+				netmask_bug_str += f"	- Changed netmask of {router_name} {interface_pair[0].get_name()} to /23: {new_ip}\n"
+		print(get_network_ascii(NETWORK))
+		# generate scripts
+		for link in NETWORK:
 			container0_name = f"{group}_{link.get_routers()[0].get_name()}router"
 			interface0_name = link.get_interfaces()[0].get_name()
 			container1_name = f"{group}_{link.get_routers()[1].get_name()}router"
 			interface1_name = link.get_interfaces()[1].get_name()
-			generate_frr_script(path, container0_name, interface0_name, f"{group}.0.{new_subnet}.1/24", f"{group}.0.{new_subnet}.0/24")
-			generate_frr_script(path, container1_name, interface1_name, f"{group}.0.{new_subnet}.2/24", f"{group}.0.{new_subnet}.0/24")
-		print(get_network_ascii(NETWORK))
-		for router, interface_pairs in get_23_prefix_interfaces(NETWORK).items():
-			print(f"Router {router} has interfaces in the same /23 prefix:")
-			for pair in interface_pairs:
-				print(f"  - {pair[0].get_name()} ({pair[0].get_ip()}) and {pair[1].get_name()} ({pair[1].get_ip()})")
+			ip0 = link.get_interfaces()[0].get_ip()
+			ip1 = link.get_interfaces()[1].get_ip()
+			network0 = ip0.replace("1/", "0/").replace("2/", "0/")
+			network1 = ip1.replace("1/", "0/").replace("2/", "0/")
+			generate_frr_script(path, container0_name, interface0_name, ip0, network0)
+			generate_frr_script(path, container1_name, interface1_name, ip1, network1)
+		
 		# create script to run each generated script in the group folder one line per script
 		with open(f"{path}/run_all_group{group}.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n\n")
 			f.write(f": <<'COMMENT'\n")
 			f.write(get_network_ascii(NETWORK))
+			if ADD_NETMASK_BUG:
+				f.write(netmask_bug_str)
+			# add routing loop bug if enabled
+			routing_loop_bug_str = ""
+			container_name = f"{group}_PRGrouter"
+			prg_host_subnet = f"{group}.108.0.0/25"
+			muc_prg_ip = get_interface_ip("MUC", "PRG").split('/')[0]
+			routing_loop_bug_str += "Adds routing loop bug:\n"
+			routing_loop_bug_str += f"	- Added static route on PRG to create routing loop: ip route {prg_host_subnet} {muc_prg_ip}\n"
+			if ADD_ROUTING_LOOP_BUG:
+				f.write(routing_loop_bug_str)
 			f.write(f"COMMENT\n\n")
 			f.write("SCRIPT_DIR=$(dirname \"$0\")\n")
 			for link in NETWORK:
@@ -249,11 +315,15 @@ if __name__ == "__main__":
 				interface1_name = link.get_interfaces()[1].get_name()
 				f.write(f"bash $SCRIPT_DIR/update_{container0_name}_{interface0_name}.sh\n")
 				f.write(f"bash $SCRIPT_DIR/update_{container1_name}_{interface1_name}.sh\n")
-			# TODO: Add netmask bug
-			# TODO: Add routing loop bug
+			if ADD_ROUTING_LOOP_BUG:
+				f.write(f"docker exec {container_name} vtysh \\-c \"configure terminal\" \\-c \"ip route {prg_host_subnet} {muc_prg_ip}\" \\-c \"exit\"")	
 		# create script to run each group script
 		with open(f"shuffle_subnets/run_all_groups.sh", "w", newline='\n') as f:
 			f.write("#!/bin/bash\n")
 			f.write("SCRIPT_DIR=$(dirname \"$0\")\n")
 			for group in GROUPS:
 				f.write(f"bash $SCRIPT_DIR/group_{group}/run_all_group{group}.sh\n")
+		if ADD_NETMASK_BUG:
+			print(netmask_bug_str)
+		if ADD_ROUTING_LOOP_BUG:
+			print(routing_loop_bug_str)
